@@ -1,5 +1,6 @@
 ﻿using Auth.Domain.Data.Entities;
 using Auth.Domain.Data.ValueObjects;
+using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence.Repositories;
 using Auth.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace Auth.Infrastructure.Persistence.Repositories
 
         public UserRepository(AuthContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public Guid Add(User user)
@@ -29,25 +30,25 @@ namespace Auth.Infrastructure.Persistence.Repositories
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
             if (user == null)
             {
-                throw new Exception("User doesn't exist");
+                throw new UserDoesntExistException();
             }
 
             user.Delete();
         }
 
-        public Task<bool> UsernameExists(UserName username, CancellationToken cancellationToken = default)
+        public Task<bool> UsernameExists(Username username, CancellationToken cancellationToken = default)
         {
-            return _context.Users.AnyAsync(x => x.Username.Username.Equals(username.Username), cancellationToken);
+            return _context.Users.AnyAsync(x => x.Username.Value.Equals(username.Value), cancellationToken);
         }
 
-        public Task<bool> EmailExists(UserEmail email, CancellationToken cancellationToken = default)
+        public Task<bool> EmailExists(Email email, CancellationToken cancellationToken = default)
         {
-            return _context.Users.AnyAsync(x => x.Email.Email.Equals(email.Email), cancellationToken);
+            return _context.Users.AnyAsync(x => x.Email.Value.Equals(email.Value), cancellationToken);
         }
 
-        public Task<User> FindByUsername(UserName username, CancellationToken cancellationToken = default)
+        public Task<User> FindByUsername(Username username, CancellationToken cancellationToken = default)
         {
-            return _context.Users.FirstOrDefaultAsync(x => x.Username.Username.Equals(username.Username), cancellationToken);
+            return _context.Users.FirstOrDefaultAsync(x => x.Username.Value.Equals(username.Value), cancellationToken);
         }
 
         public Task<User> FindById(Guid id, CancellationToken cancellationToken = default)
@@ -55,19 +56,19 @@ namespace Auth.Infrastructure.Persistence.Repositories
             return _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
-        public Task<User> FindByEmail(UserEmail email, CancellationToken cancellationToken = default)
+        public Task<User> FindByEmail(Email email, CancellationToken cancellationToken = default)
         {
-            return _context.Users.FirstOrDefaultAsync(x => x.Email.Email.Equals(email.Email), cancellationToken);
+            return _context.Users.FirstOrDefaultAsync(x => x.Email.Value.Equals(email.Value), cancellationToken);
         }
 
-        public async Task<bool> UsernameExistsOnOtherUsers(UserName username, Guid currentUserId, CancellationToken cancellationToken = default)
+        public Task<bool> UsernameExistsOnOtherUsers(Username username, Guid currentUserId, CancellationToken cancellationToken = default)
         {
-            return await _context.Users.AnyAsync(x => x.Username.Username.Equals(username.Username) && !x.Id.Equals(currentUserId));
+            return _context.Users.AnyAsync(x => x.Username.Value.Equals(username.Value) && !x.Id.Equals(currentUserId), cancellationToken);
         }
 
-        public async Task<bool> EmailExistsOnOtherUsers(UserEmail email, Guid currentUserId, CancellationToken cancellationToken = default)
+        public Task<bool> EmailExistsOnOtherUsers(Email email, Guid currentUserId, CancellationToken cancellationToken = default)
         {
-            return await _context.Users.AnyAsync(x => x.Email.Email.Equals(email.Email) && !x.Id.Equals(currentUserId));
+            return _context.Users.AnyAsync(x => x.Email.Value.Equals(email.Value) && !x.Id.Equals(currentUserId), cancellationToken);
         }
     }
 }

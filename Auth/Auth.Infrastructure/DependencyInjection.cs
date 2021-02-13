@@ -1,16 +1,23 @@
 ﻿using Auth.Domain.Creation;
+using Auth.Domain.Data.Entities;
 using Auth.Domain.Persistence;
+using Auth.Domain.Security.Encryption;
 using Auth.Domain.Security.Passwords;
-using Auth.Domain.Security.PersonalData;
 using Auth.Domain.Services.Authentication;
 using Auth.Domain.Services.Registration;
 using Auth.Domain.Services.UserOperations;
+using Auth.Domain.Specifications.EmailSpecifications;
+using Auth.Domain.Specifications.EmailSpecifications.Interfaces;
+using Auth.Domain.Specifications.PasswordSpecifications;
+using Auth.Domain.Specifications.PasswordSpecifications.Interfaces;
+using Auth.Domain.Specifications.UsernameSpecifications;
+using Auth.Domain.Specifications.UsernameSpecifications.Interfaces;
 using Auth.Infrastructure.Configuration;
 using Auth.Infrastructure.Creation;
 using Auth.Infrastructure.Persistence;
 using Auth.Infrastructure.Persistence.Context;
+using Auth.Infrastructure.Security.Encryption;
 using Auth.Infrastructure.Security.Passwords;
-using Auth.Infrastructure.Security.PersonalData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +33,7 @@ namespace Auth.Infrastructure
             services.AddFactories();
             services.AddDataEncryption();
             services.AddServiceConfiguration();
+            services.AddSpecifications();
         }
 
         private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -39,6 +47,15 @@ namespace Auth.Infrastructure
             services.AddTransient<IUserRegistrationService, UserRegistrationService>();
             services.AddTransient<IUserAuthenticationService, UserAuthenticationService>();
             services.AddTransient<IUserOperationsService, UserOperationsService>();
+        }
+
+        private static void AddSpecifications(this IServiceCollection services)
+        {
+            services.AddTransient<IEmailExists, EmailExists>();
+            services.AddTransient<IEmailExistsOnOtherUsers, EmailExistsOnOtherUsers>();
+            services.AddTransient<IUsernameExists, UsernameExists>();
+            services.AddTransient<IUsernameExistsOnOtherUsers, UsernameExistsOnOtherUsers>();
+            services.AddTransient<IPasswordMatches, PasswordMatches>();
         }
 
         private static void AddFactories(this IServiceCollection services)

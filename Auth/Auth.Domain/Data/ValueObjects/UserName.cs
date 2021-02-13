@@ -4,14 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace Auth.Domain.Data.ValueObjects
 {
-    public class UserName : IValueObject
+    public class Username : IValueObject<string>
     {
         private const string _validFormat = @"^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
         private const int _minLength = 8;
-        private const int _maxLength = 20;
-        public string Username { get; }
+        private const int _maxLength = 25;
+        public string Value { get; }
 
-        public UserName(string username)
+        public Username(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -26,39 +26,29 @@ namespace Auth.Domain.Data.ValueObjects
                 throw new UserNameInvalidFormatException();
             }
 
-            Username = username;
+            Value = username;
         }
-        public UserName(UserName username) : this(username.Username) { }
-        private UserName() { }
+        public Username(Username username) : this(username.Value) { }
+        private Username() { }
 
-        public bool Equals(UserName username)
+        public bool Equals(Username username)
         {
-            return Username.ToUpper().Equals(username.Username.ToUpper());
+            return Value.ToUpper().Equals(username.Value.ToUpper());
         }
 
         public override bool Equals(object obj)
         {
-            return Username.Equals(obj);
+            return Value.Equals(obj);
         }
 
         public override int GetHashCode()
         {
-            return Username.GetHashCode();
+            return Value.GetHashCode();
         }
 
         public override string ToString()
         {
-            return Username;
-        }
-
-        public static bool operator ==(UserName username1, UserName username2)
-        {
-            return username1.Username.ToUpper().Equals(username2.Username.ToUpper());
-        }
-
-        public static bool operator !=(UserName username1, UserName username2)
-        {
-            return !username1.Username.ToUpper().Equals(username2.Username.ToUpper());
+            return Value;
         }
     }
 }

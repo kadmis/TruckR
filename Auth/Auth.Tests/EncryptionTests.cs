@@ -1,6 +1,4 @@
-﻿using Auth.Domain.Data.ValueObjects;
-using Auth.Infrastructure.Security.Passwords;
-using Auth.Infrastructure.Security.PersonalData;
+﻿using Auth.Infrastructure.Security.Encryption;
 using Xunit;
 
 namespace Auth.Tests

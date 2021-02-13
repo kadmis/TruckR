@@ -1,6 +1,11 @@
 ﻿namespace Auth.Domain.Data
 {
-    public interface IValueObject
+    /// <summary>
+    /// Interface that represents value object of a given type.
+    /// </summary>
+    /// <typeparam name="Type"></typeparam>
+    public interface IValueObject<Type>
     {
+        public Type Value { get; }
     }
 }

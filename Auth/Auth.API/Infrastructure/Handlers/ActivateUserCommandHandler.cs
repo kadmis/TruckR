@@ -3,8 +3,6 @@ using Auth.API.Infrastructure.Models.CommandsResults;
 using Auth.Domain.Services.UserOperations;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,14 +14,14 @@ namespace Auth.API.Infrastructure.Handlers
 
         public ActivateUserCommandHandler(IUserOperationsService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async Task<UserActivationResult> Handle(ActivateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _service.Activate(request.UserId, request.ActivationId);
+                var result = await _service.Activate(request.UserId, request.ActivationId, cancellationToken);
                 return UserActivationResult.Success();
             }
             catch(Exception ex)

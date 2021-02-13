@@ -26,8 +26,8 @@ namespace Auth.API.Infrastructure.JWT
         public string GenerateFor(User user)
         {
             ClaimsIdentity claims = new ClaimsIdentity();
-            claims.AddClaim(new Claim(ClaimTypes.Name, user.Username.Username));
-            claims.AddClaim(new Claim(ClaimTypes.Email, user.Email.Email));
+            claims.AddClaim(new Claim(ClaimTypes.Name, user.Username.Value));
+            claims.AddClaim(new Claim(ClaimTypes.Email, user.Email.Value));
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
 
             var tokenHandler = new JwtSecurityTokenHandler();

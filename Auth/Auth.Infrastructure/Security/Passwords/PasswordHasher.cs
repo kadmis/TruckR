@@ -23,15 +23,15 @@ namespace Auth.Infrastructure.Security.Passwords
             return _hasher.HashPassword(null, password);
         }
 
-        public bool VerifyHashedPassword(UserPassword hashedPassword, string providedPassword)
+        public bool VerifyHashedPassword(Password hashedPassword, string providedPassword)
         {
-            var result = _hasher.VerifyHashedPassword(null, hashedPassword.Password, providedPassword);
+            var result = _hasher.VerifyHashedPassword(null, hashedPassword.Value, providedPassword);
             return result is PasswordVerificationResult.Success;
         }
 
-        public bool VerifyHashedPassword(UserPassword hashedPassword, UserPassword providedPassword)
+        public bool VerifyHashedPassword(Password hashedPassword, Password providedPassword)
         {
-            var result = _hasher.VerifyHashedPassword(null, hashedPassword.Password, providedPassword.Password);
+            var result = _hasher.VerifyHashedPassword(null, hashedPassword.Value, providedPassword.Value);
             return result is PasswordVerificationResult.Success;
         }
     }

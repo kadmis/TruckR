@@ -1,8 +1,4 @@
 ﻿using Auth.Domain.Data.ValueObjects;
-using Auth.Infrastructure.Security.Passwords;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Auth.Tests
@@ -14,7 +10,7 @@ namespace Auth.Tests
         {
             for(int i=0;i<100;i++)
             {
-                UserPassword.Randomize();
+                Password.Randomize();
             }
         }
     }

@@ -1,12 +1,7 @@
 ﻿using Auth.API.Infrastructure.Commands;
 using Auth.API.Infrastructure.JWT;
 using Auth.API.Infrastructure.Models;
-using Auth.Domain.Data.ValueObjects;
-using Auth.Domain.Persistence;
-using Auth.Domain.Persistence.Repositories;
-using Auth.Domain.Security.Passwords;
 using Auth.Domain.Services.Authentication;
-using Auth.Domain.Specifications.Password;
 using MediatR;
 using System;
 using System.Threading;
@@ -21,8 +16,8 @@ namespace Auth.API.Infrastructure.Handlers
 
         public AuthenticationCommandHandler(IUserAuthenticationService authService, ITokenGenerator tokenGenerator)
         {
-            _authService = authService;
-            _tokenGenerator = tokenGenerator;
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+            _tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
         }
 
         public async Task<AuthenticationResult> Handle(AuthenticationCommand request, CancellationToken cancellationToken)

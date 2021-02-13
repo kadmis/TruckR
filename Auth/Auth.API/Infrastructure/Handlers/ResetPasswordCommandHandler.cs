@@ -14,7 +14,7 @@ namespace Auth.API.Infrastructure.Handlers
 
         public ResetPasswordCommandHandler(IUserOperationsService userOperationsService)
         {
-            _userOperationsService = userOperationsService;
+            _userOperationsService = userOperationsService ?? throw new ArgumentNullException(nameof(userOperationsService));
         }
 
         public async Task<ResetPasswordResult> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)

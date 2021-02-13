@@ -39,6 +39,9 @@ namespace Auth.Infrastructure.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("PasswordResetToken")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -46,12 +49,12 @@ namespace Auth.Infrastructure.Migrations
 
             modelBuilder.Entity("Auth.Domain.Data.Entities.User", b =>
                 {
-                    b.OwnsOne("Auth.Domain.Data.ValueObjects.UserEmail", "Email", b1 =>
+                    b.OwnsOne("Auth.Domain.Data.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Email")
+                            b1.Property<string>("Value")
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Email");
 
@@ -63,14 +66,14 @@ namespace Auth.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("Auth.Domain.Data.ValueObjects.UserName", "Username", b1 =>
+                    b.OwnsOne("Auth.Domain.Data.ValueObjects.Password", "Password", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Username")
+                            b1.Property<string>("Value")
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Username");
+                                .HasColumnName("Password");
 
                             b1.HasKey("UserId");
 
@@ -80,14 +83,14 @@ namespace Auth.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("Auth.Domain.Data.ValueObjects.UserPassword", "Password", b1 =>
+                    b.OwnsOne("Auth.Domain.Data.ValueObjects.Username", "Username", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Password")
+                            b1.Property<string>("Value")
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Password");
+                                .HasColumnName("Username");
 
                             b1.HasKey("UserId");
 

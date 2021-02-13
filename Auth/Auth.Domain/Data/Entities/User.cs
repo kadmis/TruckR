@@ -1,22 +1,21 @@
 ﻿using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Exceptions.UserExceptions;
-using Auth.Domain.Security.Passwords;
-using Auth.Domain.Specifications.Password;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Auth.Domain.Data.Entities
 {
-    public class User : IEntity
+    public class User : IEntity<Guid>
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
-        public UserName Username { get; private set; }
-        public UserPassword Password { get; private set; }
-        public UserEmail Email { get; private set; }
+        public Username Username { get; private set; }
+        public Password Password { get; private set; }
+        public Email Email { get; private set; }
 
         public Guid? ActivationId { get; private set; }
         public bool Active { get; private set; }
+
+        public Guid? PasswordResetToken { get; private set; }
 
         public DateTime CreatedDate { get; private set; }
         public DateTime ModifiedDate { get; private set; }
@@ -25,7 +24,7 @@ namespace Auth.Domain.Data.Entities
         public bool IsDeleted => DeletedDate.HasValue;
         public bool Inactive => !Active;
 
-        public User(Guid id, UserName username, UserPassword password, UserEmail email)
+        public User(Guid id, Username username, Password password, Email email)
         {
             ThrowIfEmailAndUsernameMatch(email, username);
 
@@ -37,13 +36,13 @@ namespace Auth.Domain.Data.Entities
             ModifiedDate = CreatedDate;
             ActivationId = Guid.NewGuid();
         }
-        public User(UserName username, UserPassword password, UserEmail email) : this(Guid.NewGuid(), username, password, email)
+        public User(Username username, Password password, Email email) : this(Guid.NewGuid(), username, password, email)
         {
         }
         private User() { }
 
         /// <summary>
-        /// Sets user as deleted, inactive, removes username and email and resets password.
+        /// Sets user as deleted, inactive, removes username, removes email and resets password.
         /// </summary>
         /// <returns></returns>
         public User Delete()
@@ -53,13 +52,11 @@ namespace Auth.Domain.Data.Entities
             Active = false;
             ActivationId = null;
             Username = null;
-            Password = UserPassword.Randomize();
+            Password = Password.Randomize();
             Email = null;
-
             DeletedDate = DateTime.Now;
-            ModifiedDate = DeletedDate.Value;
 
-            return this;
+            return Modified();
         }
 
         /// <summary>
@@ -70,14 +67,13 @@ namespace Auth.Domain.Data.Entities
         public User Activate(Guid activationId)
         {
             ThrowIfUserDeleted();
-            ThrowIfActivated();
+            ThrowIfActive();
             ThrowIfActivationIdInvalid(activationId);
 
             Active = true;
             ActivationId = null;
-            ModifiedDate = DateTime.Now;
 
-            return this;
+            return Modified();
         }
 
         /// <summary>
@@ -87,28 +83,45 @@ namespace Auth.Domain.Data.Entities
         public User Deactivate()
         {
             ThrowIfUserDeleted();
-            ThrowIfDeactivated();
+            ThrowIfInactive();
 
             Active = false;
             ActivationId = Guid.NewGuid();
-            Password = UserPassword.Randomize();
-            ModifiedDate = DateTime.Now;
+            Password = Password.Randomize();
 
-            return this;
+            return Modified();
         }
 
         /// <summary>
         /// Resets password.
         /// </summary>
         /// <returns></returns>
-        public UserPassword ResetPassword()
+        public User ResetPassword()
         {
             ThrowIfUserDeleted();
+            ThrowIfInactive();
 
-            Password = UserPassword.Randomize();
-            ModifiedDate = DateTime.Now;
+            Password = Password.Randomize();
+            PasswordResetToken = Guid.NewGuid();
 
-            return Password;
+            return Modified();
+        }
+
+        /// <summary>
+        /// Sets password to the new, given password.
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public User SetPassword(Password password, Guid resetToken)
+        {
+            ThrowIfUserDeleted();
+            ThrowIfInactive();
+            ThrowIfPasswordResetTokenIsInvalid(resetToken);
+
+            Password = password;
+            PasswordResetToken = null;
+
+            return Modified();
         }
 
         /// <summary>
@@ -116,14 +129,15 @@ namespace Auth.Domain.Data.Entities
         /// </summary>
         /// <param name="newUsername"></param>
         /// <returns></returns>
-        public UserName ChangeUsername(UserName newUsername)
+        public User ChangeUsername(Username newUsername)
         {
             ThrowIfUserDeleted();
             ThrowIfEmailAndUsernameMatch(Email, newUsername);
             ThrowIfNewUsernameIsTheSame(newUsername);
 
-            ModifiedDate = DateTime.Now;
-            return Username = newUsername;
+            Username = newUsername;
+
+            return Modified();
         }
 
         /// <summary>
@@ -131,19 +145,26 @@ namespace Auth.Domain.Data.Entities
         /// </summary>
         /// <param name="newEmail"></param>
         /// <returns></returns>
-        public UserEmail ChangeEmail(UserEmail newEmail)
+        public User ChangeEmail(Email newEmail)
         {
             ThrowIfUserDeleted();
             ThrowIfEmailAndUsernameMatch(newEmail, Username);
             ThrowIfNewEmailIsTheSame(newEmail);
 
-            ModifiedDate = DateTime.Now;
-            return Email = newEmail;
+            Email = newEmail;
+            
+            return Modified();
         }
 
-        private void ThrowIfEmailAndUsernameMatch(UserEmail email, UserName username)
+        private User Modified()
         {
-            if (email.Email.ToUpper().Equals(username.Username.ToUpper()))
+            ModifiedDate = DateTime.Now;
+            return this;
+        }
+
+        private void ThrowIfEmailAndUsernameMatch(Email email, Username username)
+        {
+            if (email.Value.ToUpper().Equals(username.Value.ToUpper()))
             {
                 throw new UsernameEmailMatchException();
             }
@@ -157,19 +178,19 @@ namespace Auth.Domain.Data.Entities
             }
         }
 
-        private void ThrowIfActivated()
+        private void ThrowIfActive()
         {
             if(Active)
             {
-                throw new UserActivatedException();
+                throw new UserActiveException();
             }
         }
 
-        private void ThrowIfDeactivated()
+        private void ThrowIfInactive()
         {
             if(Inactive)
             {
-                throw new UserDeactivatedException();
+                throw new UserInactiveException();
             }
         }
 
@@ -181,7 +202,7 @@ namespace Auth.Domain.Data.Entities
             }
         }
 
-        private void ThrowIfNewUsernameIsTheSame(UserName username)
+        private void ThrowIfNewUsernameIsTheSame(Username username)
         {
             if (Username == username)
             {
@@ -189,11 +210,19 @@ namespace Auth.Domain.Data.Entities
             }
         }
 
-        private void ThrowIfNewEmailIsTheSame(UserEmail email)
+        private void ThrowIfNewEmailIsTheSame(Email email)
         {
             if (Email == email)
             {
                 throw new NewEmailSameAsOldException();
+            }
+        }
+
+        private void ThrowIfPasswordResetTokenIsInvalid(Guid resetToken)
+        {
+            if(PasswordResetToken == null || resetToken != PasswordResetToken)
+            {
+                throw new InvalidPasswordResetTokenException();
             }
         }
     }

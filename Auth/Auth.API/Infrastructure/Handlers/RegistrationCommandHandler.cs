@@ -14,14 +14,14 @@ namespace Auth.API.Infrastructure.Handlers
 
         public RegistrationCommandHandler(IUserRegistrationService registrationService)
         {
-            _registrationService = registrationService;
+            _registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
         }
 
         public async Task<RegistrationResult> Handle(RegistrationCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _registrationService.Register(request.Username, request.Password, request.Email);
+                var result = await _registrationService.Register(request.Username, request.Password, request.Email, cancellationToken);
                 return RegistrationResult.Success(result.Id);
             }
             catch(Exception ex)

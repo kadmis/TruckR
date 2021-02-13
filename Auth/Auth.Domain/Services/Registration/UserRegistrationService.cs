@@ -3,8 +3,9 @@ using Auth.Domain.Data.Entities;
 using Auth.Domain.Exceptions;
 using Auth.Domain.Exceptions.UserNameExceptions;
 using Auth.Domain.Persistence;
-using Auth.Domain.Specifications.Email;
-using Auth.Domain.Specifications.Username;
+using Auth.Domain.Specifications.EmailSpecifications.Interfaces;
+using Auth.Domain.Specifications.UsernameSpecifications.Interfaces;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,11 +15,15 @@ namespace Auth.Domain.Services.Registration
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserFactory _userFactory;
+        private readonly IEmailSpecification _emailExists;
+        private readonly IUsernameSpecification _usernameExists;
 
-        public UserRegistrationService(IUnitOfWork unitOfWork, IUserFactory userFactory)
+        public UserRegistrationService(IUnitOfWork unitOfWork, IUserFactory userFactory, IEmailExists emailExists, IUsernameExists usernameExists)
         {
-            _unitOfWork = unitOfWork;
-            _userFactory = userFactory;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _userFactory = userFactory ?? throw new ArgumentNullException(nameof(userFactory));
+            _emailExists = emailExists ?? throw new ArgumentNullException(nameof(emailExists));
+            _usernameExists = usernameExists ?? throw new ArgumentNullException(nameof(usernameExists));
         }
 
         public async Task<User> Register(string username, string password, string email, CancellationToken cancellationToken = default)
@@ -29,16 +34,14 @@ namespace Auth.Domain.Services.Registration
             await ThrowIfUsernameExists(user, cancellationToken);
 
             _unitOfWork.UserRepository.Add(user);
-            await _unitOfWork.Save();
+            await _unitOfWork.Save(cancellationToken);
 
             return user;
         }
 
         private async Task ThrowIfEmailExists(User user, CancellationToken cancellationToken = default)
         {
-            var emailExists = new EmailExists(_unitOfWork);
-
-            if(await emailExists.IsSatisfiedBy(user.Email, cancellationToken))
+            if(await _emailExists.IsSatisfiedBy(user.Email, cancellationToken))
             {
                 throw new EmailExistsException();
             }
@@ -46,9 +49,7 @@ namespace Auth.Domain.Services.Registration
 
         private async Task ThrowIfUsernameExists(User user, CancellationToken cancellationToken = default)
         {
-            var usernameExists = new UsernameExists(_unitOfWork);
-
-            if (await usernameExists.IsSatisfiedBy(user.Username, cancellationToken))
+            if (await _usernameExists.IsSatisfiedBy(user.Username, cancellationToken))
             {
                 throw new UsernameExistsException();
             }

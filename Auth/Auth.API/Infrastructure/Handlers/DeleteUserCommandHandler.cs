@@ -14,7 +14,7 @@ namespace Auth.API.Infrastructure.Handlers
 
         public DeleteUserCommandHandler(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<UserDeletionResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ namespace Auth.API.Infrastructure.Handlers
             try
             {
                 await _unitOfWork.UserRepository.Delete(request.Id);
-                await _unitOfWork.Save();
+                await _unitOfWork.Save(cancellationToken);
 
                 return UserDeletionResult.Success(request.Id);
             }

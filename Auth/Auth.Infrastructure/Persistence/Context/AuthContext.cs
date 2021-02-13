@@ -1,6 +1,6 @@
 ﻿using Auth.Domain.Data.Entities;
+using Auth.Domain.Security.Encryption;
 using Auth.Domain.Security.Passwords;
-using Auth.Domain.Security.PersonalData;
 using Auth.Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 

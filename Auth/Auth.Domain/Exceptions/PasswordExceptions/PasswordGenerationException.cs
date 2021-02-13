@@ -6,7 +6,7 @@ namespace Auth.Domain.Exceptions.PasswordExceptions
 {
     internal class PasswordGenerationException : Exception
     {
-        public PasswordGenerationException() : base("Something went wrong with password generation.")
+        public PasswordGenerationException() : base("Something went wrong when trying to generate new password.")
         {
         }
     }

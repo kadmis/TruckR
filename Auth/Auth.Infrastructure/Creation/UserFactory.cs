@@ -13,12 +13,12 @@ namespace Auth.Infrastructure.Creation
 
         public User Create(Guid id, string username, string password, string email)
         {
-            return new User(id, new UserName(username), new UserPassword(password), new UserEmail(email));
+            return new User(id, new Username(username), new Password(password), new Email(email));
         }
 
         public User Create(string username, string password, string email)
         {
-            return new User(new UserName(username), new UserPassword(password), new UserEmail(email));
+            return new User(new Username(username), new Password(password), new Email(email));
         }
     }
 }
