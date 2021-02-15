@@ -12,5 +12,7 @@ namespace Auth.Domain.Services.UserOperations
         public Task<User> ResetPassword(Guid id, CancellationToken cancellationToken = default);
         public Task<User> SetPassword(Guid id, Guid resetToken, string password, CancellationToken cancellationToken = default);
         public Task<User> Activate(Guid userId, Guid activationGuid, CancellationToken cancellationToken = default);
+        public Task<User> RemindPassword(string email, string username, CancellationToken cancellationToken = default);
+        public Task<User> RemindUsername(string email, CancellationToken cancellationToken = default);
     }
 }

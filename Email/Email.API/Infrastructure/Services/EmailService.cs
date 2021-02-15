@@ -3,6 +3,7 @@ using Email.API.Infrastructure.Models;
 using MailKit.Net.Smtp;
 using MimeKit;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Email.API.Infrastructure.Services
@@ -16,15 +17,15 @@ namespace Email.API.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmail(EmailModel email)
+        public async Task SendEmail(EmailModel email, CancellationToken cancellationToken = default)
         {
             using (var client = new SmtpClient())
             {
                 client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                await client.ConnectAsync(_configuration.Server, _configuration.Port, true);
-                await client.AuthenticateAsync(_configuration.Email, _configuration.Password);
-                await client.SendAsync(CreateMessage(email));
+                await client.ConnectAsync(_configuration.Server, _configuration.Port, true, cancellationToken);
+                await client.AuthenticateAsync(_configuration.Email, _configuration.Password, cancellationToken);
+                await client.SendAsync(CreateMessage(email), cancellationToken);
                 await client.DisconnectAsync(true);
             }
         }

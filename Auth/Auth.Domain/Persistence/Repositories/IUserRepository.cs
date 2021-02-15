@@ -15,6 +15,7 @@ namespace Auth.Domain.Persistence.Repositories
         Task<User> FindByUsername(Username username, CancellationToken cancellationToken = default);
         Task<User> FindById(Guid id, CancellationToken cancellationToken = default);
         Task<User> FindByEmail(Email email, CancellationToken cancellationToken = default);
+        Task<User> FindByEmailAndUsername(Email email, Username username, CancellationToken cancellationToken = default);
         Task<bool> UsernameExists(Username username, CancellationToken cancellationToken = default);
         Task<bool> EmailExists(Email email, CancellationToken cancellationToken = default);
         Task<bool> UsernameExistsOnOtherUsers(Username username, Guid currentUserId, CancellationToken cancellationToken = default);

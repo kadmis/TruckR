@@ -14,13 +14,17 @@ using Auth.Domain.Specifications.UsernameSpecifications;
 using Auth.Domain.Specifications.UsernameSpecifications.Interfaces;
 using Auth.Infrastructure.Configuration;
 using Auth.Infrastructure.Creation;
+using Auth.Infrastructure.Messaging;
 using Auth.Infrastructure.Persistence;
 using Auth.Infrastructure.Persistence.Context;
 using Auth.Infrastructure.Security.Encryption;
 using Auth.Infrastructure.Security.Passwords;
+using Auth.IntegrationEvents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SharedRabbitMQ;
+using SharedRabbitMQ.Publishing;
 
 namespace Auth.Infrastructure
 {
@@ -34,6 +38,7 @@ namespace Auth.Infrastructure
             services.AddDataEncryption();
             services.AddServiceConfiguration();
             services.AddSpecifications();
+            services.AddEventBus();
         }
 
         private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -72,6 +77,14 @@ namespace Auth.Infrastructure
         private static void AddServiceConfiguration(this IServiceCollection services)
         {
             services.AddSingleton<IServiceConfiguration, ServiceConfiguration>();
+        }
+
+        private static void AddEventBus(this IServiceCollection services)
+        {
+            services.AddRabbit();
+            services.AddTransient<IEventPublisher<UserRegisteredEvent>, UserRegisteredEventPublisher>();
+            services.AddTransient<IEventPublisher<UserResetPasswordEvent>, UserResetPasswordEventPublisher>();
+            services.AddTransient<IEventPublisher<UsernameRemindedEvent>, UsernameRemindedEventPublisher>();
         }
     }
 }

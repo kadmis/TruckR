@@ -1,5 +1,4 @@
-﻿using Auth.Domain.Exceptions.UserNameExceptions;
-using System;
+﻿using Auth.Domain.Exceptions.UsernameExceptions;
 using System.Text.RegularExpressions;
 
 namespace Auth.Domain.Data.ValueObjects
@@ -15,15 +14,15 @@ namespace Auth.Domain.Data.ValueObjects
         {
             if (string.IsNullOrEmpty(username))
             {
-                throw new UserNameEmptyException();
+                throw new UsernameEmptyException();
             }
             if (username.Length < _minLength || username.Length > _maxLength)
             {
-                throw new UserNameInvalidLengthException(_minLength, _maxLength);
+                throw new UsernameInvalidLengthException(_minLength, _maxLength);
             }
             if (!Regex.IsMatch(username, _validFormat))
             {
-                throw new UserNameInvalidFormatException();
+                throw new UsernameInvalidFormatException();
             }
 
             Value = username;

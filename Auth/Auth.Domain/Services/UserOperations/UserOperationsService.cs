@@ -2,7 +2,7 @@
 using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Exceptions;
 using Auth.Domain.Exceptions.UserExceptions;
-using Auth.Domain.Exceptions.UserNameExceptions;
+using Auth.Domain.Exceptions.UsernameExceptions;
 using Auth.Domain.Persistence;
 using Auth.Domain.Specifications.EmailSpecifications;
 using Auth.Domain.Specifications.UsernameSpecifications;
@@ -27,10 +27,8 @@ namespace Auth.Domain.Services.UserOperations
 
             var newEmail = new Email(email);
 
-            var emailExists = new EmailExistsOnOtherUsers(_uow)
-                .Setup(id);
-
-            if(await emailExists.IsSatisfiedBy(newEmail, cancellationToken))
+            var emailExists = new EmailExistsOnOtherUsers(_uow);
+            if(await emailExists.Setup(id).IsSatisfiedBy(newEmail, cancellationToken))
             {
                 throw new EmailExistsException();
             }
@@ -69,7 +67,6 @@ namespace Auth.Domain.Services.UserOperations
             var newUsername = new Username(username);
 
             var usernameExists = new UsernameExistsOnOtherUsers(_uow);
-
             if (await usernameExists.Setup(id).IsSatisfiedBy(newUsername, cancellationToken))
             {
                 throw new UsernameExistsException();
@@ -91,6 +88,36 @@ namespace Auth.Domain.Services.UserOperations
             return user;
         }
 
+        public async Task<User> RemindPassword(string email, string username, CancellationToken cancellationToken = default)
+        {
+            var givenEmail = new Email(email);
+            var givenUsername = new Username(username);
+
+            var user = await _uow.UserRepository.FindByEmailAndUsername(givenEmail, givenUsername, cancellationToken);
+            if(user == null)
+            {
+                throw new UserDoesntExistException();
+            }
+
+            user.ResetPassword();
+            await _uow.Save(cancellationToken);
+
+            return user;
+        }
+
+        public async Task<User> RemindUsername(string email, CancellationToken cancellationToken = default)
+        {
+            var givenEmail = new Email(email);
+
+            var user = await _uow.UserRepository.FindByEmail(givenEmail, cancellationToken);
+            if(user == null)
+            {
+                throw new UserDoesntExistException();
+            }
+
+            return user;
+        }
+
         private async Task<User> TryGetUser(Guid id, CancellationToken cancellationToken = default)
         {
             var user = await _uow.UserRepository.FindById(id, cancellationToken);
@@ -102,5 +129,6 @@ namespace Auth.Domain.Services.UserOperations
 
             return user;
         }
+
     }
 }

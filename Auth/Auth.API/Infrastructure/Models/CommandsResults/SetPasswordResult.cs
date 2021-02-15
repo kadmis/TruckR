@@ -1,6 +1,6 @@
 ﻿namespace Auth.API.Infrastructure.Models.CommandsResults
 {
-    public class SetPasswordResult
+    public class SetPasswordResult : IResult
     {
         public string Message { get; }
         public bool Successful { get; }

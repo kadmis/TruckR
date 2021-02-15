@@ -21,7 +21,7 @@ namespace Auth.API.Infrastructure.Handlers
         {
             try
             {
-                await _unitOfWork.UserRepository.Delete(request.Id);
+                await _unitOfWork.UserRepository.Delete(request.Id, cancellationToken);
                 await _unitOfWork.Save(cancellationToken);
 
                 return UserDeletionResult.Success(request.Id);

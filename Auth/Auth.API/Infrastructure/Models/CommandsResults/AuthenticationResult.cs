@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Auth.API.Infrastructure.Models.CommandsResults;
 
 namespace Auth.API.Infrastructure.Models
 {
-    public class AuthenticationResult
+    public class AuthenticationResult : IResult
     {
         public string Token { get; }
         public string Message { get; }

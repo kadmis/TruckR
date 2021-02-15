@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Auth.Domain.Exceptions.UserNameExceptions
+namespace Auth.Domain.Exceptions.UsernameExceptions
 {
-    internal class UserNameInvalidFormatException : Exception
+    internal class UsernameInvalidFormatException : Exception
     {
-        public UserNameInvalidFormatException():base("Invalid username format.")
+        public UsernameInvalidFormatException() : base("Invalid username format.")
         {
         }
     }

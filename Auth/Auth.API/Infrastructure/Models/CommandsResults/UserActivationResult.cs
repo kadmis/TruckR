@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Auth.API.Infrastructure.Models.CommandsResults
+﻿namespace Auth.API.Infrastructure.Models.CommandsResults
 {
-    public class UserActivationResult
+    public class UserActivationResult : IResult
     {
         public string Message { get; }
         public bool Successful { get; }

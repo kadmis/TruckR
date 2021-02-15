@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Auth.API.Infrastructure.Models.CommandsResults
 {
-    public class RegistrationResult
+    public class RegistrationResult : IResult
     {
         public Guid? Id { get; }
         public string Message { get; }
@@ -20,7 +17,7 @@ namespace Auth.API.Infrastructure.Models.CommandsResults
 
         public static RegistrationResult Success(Guid id)
         {
-            return new RegistrationResult(id, "Registration successful. Welcome to the TruckR system.", true);
+            return new RegistrationResult(id, "Registration successful. Please check your inbox for activation link.", true);
         }
 
         public static RegistrationResult Fail(string message)

@@ -61,6 +61,11 @@ namespace Auth.Infrastructure.Persistence.Repositories
             return _context.Users.FirstOrDefaultAsync(x => x.Email.Value.Equals(email.Value), cancellationToken);
         }
 
+        public Task<User> FindByEmailAndUsername(Email email, Username username, CancellationToken cancellationToken = default)
+        {
+            return _context.Users.FirstOrDefaultAsync(x => x.Email.Value.Equals(email.Value) && x.Username.Value.Equals(username.Value), cancellationToken);
+        }
+
         public Task<bool> UsernameExistsOnOtherUsers(Username username, Guid currentUserId, CancellationToken cancellationToken = default)
         {
             return _context.Users.AnyAsync(x => x.Username.Value.Equals(username.Value) && !x.Id.Equals(currentUserId), cancellationToken);

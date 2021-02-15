@@ -14,4 +14,9 @@
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Auth\Auth.IntegrationEvents\Auth.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\Shared\SharedRabbitMQ\SharedRabbitMQ.csproj" />
+  </ItemGroup>
+
 </Project>

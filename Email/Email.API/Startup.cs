@@ -1,18 +1,15 @@
+using Auth.IntegrationEvents;
 using Email.API.Infrastructure.Configuration;
+using Email.API.Infrastructure.Messaging;
 using Email.API.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using SharedRabbitMQ;
+using SharedRabbitMQ.Externals.Events.Handling;
 
 namespace Email.API
 {
@@ -36,6 +33,10 @@ namespace Email.API
             });
             services.AddTransient<IEmailService, EmailService>();
             services.AddSingleton(new EmailConfiguration(Configuration));
+            services.AddRabbit();
+            services.AddTransient<IEventHandler<UserRegisteredEvent>, UserRegisteredEventHandler>();
+            services.AddTransient<IEventHandler<UserResetPasswordEvent>, UserResetPasswordEventHandler>();
+            services.AddTransient<IEventHandler<UsernameRemindedEvent>, UsernameRemindedEventHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +59,11 @@ namespace Email.API
             {
                 endpoints.MapControllers();
             });
+
+            app
+                .AddHandler<UserRegisteredEvent>()
+                .AddHandler<UserResetPasswordEvent>()
+                .AddHandler<UsernameRemindedEvent>();
         }
     }
 }

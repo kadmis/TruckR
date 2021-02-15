@@ -2,7 +2,7 @@
 
 namespace Auth.API.Infrastructure.Models.CommandsResults
 {
-    public class UserDeletionResult
+    public class UserDeletionResult : IResult
     {
         public string Message { get; }
         public bool Successful { get; }

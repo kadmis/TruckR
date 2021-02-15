@@ -26,8 +26,6 @@ namespace Auth.Domain.Data.Entities
 
         public User(Guid id, Username username, Password password, Email email)
         {
-            ThrowIfEmailAndUsernameMatch(email, username);
-
             Id = id;
             Username = username;
             Password = password;
@@ -132,7 +130,6 @@ namespace Auth.Domain.Data.Entities
         public User ChangeUsername(Username newUsername)
         {
             ThrowIfUserDeleted();
-            ThrowIfEmailAndUsernameMatch(Email, newUsername);
             ThrowIfNewUsernameIsTheSame(newUsername);
 
             Username = newUsername;
@@ -148,7 +145,6 @@ namespace Auth.Domain.Data.Entities
         public User ChangeEmail(Email newEmail)
         {
             ThrowIfUserDeleted();
-            ThrowIfEmailAndUsernameMatch(newEmail, Username);
             ThrowIfNewEmailIsTheSame(newEmail);
 
             Email = newEmail;
@@ -160,14 +156,6 @@ namespace Auth.Domain.Data.Entities
         {
             ModifiedDate = DateTime.Now;
             return this;
-        }
-
-        private void ThrowIfEmailAndUsernameMatch(Email email, Username username)
-        {
-            if (email.Value.ToUpper().Equals(username.Value.ToUpper()))
-            {
-                throw new UsernameEmailMatchException();
-            }
         }
 
         private void ThrowIfUserDeleted()
@@ -204,7 +192,7 @@ namespace Auth.Domain.Data.Entities
 
         private void ThrowIfNewUsernameIsTheSame(Username username)
         {
-            if (Username == username)
+            if (Username.Equals(username))
             {
                 throw new NewUsernameSameAsOldException();
             }
@@ -212,7 +200,7 @@ namespace Auth.Domain.Data.Entities
 
         private void ThrowIfNewEmailIsTheSame(Email email)
         {
-            if (Email == email)
+            if (Email.Equals(email))
             {
                 throw new NewEmailSameAsOldException();
             }

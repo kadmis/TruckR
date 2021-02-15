@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Auth.Domain.Exceptions.UserNameExceptions
+namespace Auth.Domain.Exceptions.UsernameExceptions
 {
-    internal class UserNameInvalidLengthException : Exception
+    internal class UsernameInvalidLengthException : Exception
     {
-        public UserNameInvalidLengthException(int minLength, int maxLength):base($"Username has to be between {minLength} and {maxLength} characters long.")
+        public UsernameInvalidLengthException(int minLength, int maxLength) : base($"Username has to be between {minLength} and {maxLength} characters long.")
         {
 
         }

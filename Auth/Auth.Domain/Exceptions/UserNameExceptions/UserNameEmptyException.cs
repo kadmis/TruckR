@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Auth.Domain.Exceptions.UserNameExceptions
+namespace Auth.Domain.Exceptions.UsernameExceptions
 {
-    internal class UserNameEmptyException : Exception
+    internal class UsernameEmptyException : Exception
     {
-        public UserNameEmptyException():base("Username cannot be empty.")
+        public UsernameEmptyException() : base("Username cannot be empty.")
         {
         }
     }

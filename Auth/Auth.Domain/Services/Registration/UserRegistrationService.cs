@@ -1,7 +1,7 @@
 ﻿using Auth.Domain.Creation;
 using Auth.Domain.Data.Entities;
 using Auth.Domain.Exceptions;
-using Auth.Domain.Exceptions.UserNameExceptions;
+using Auth.Domain.Exceptions.UsernameExceptions;
 using Auth.Domain.Persistence;
 using Auth.Domain.Specifications.EmailSpecifications.Interfaces;
 using Auth.Domain.Specifications.UsernameSpecifications.Interfaces;
