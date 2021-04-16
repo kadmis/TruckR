@@ -25,9 +25,22 @@ namespace Auth.Application.Commands.Handlers
         {
             try
             {
-                var result = await _registrationService.RegisterDriver(request.Username, request.Firstname, request.Lastname, request.Password, request.Email, cancellationToken);
+                var result = await _registrationService.RegisterDriver(
+                    request.Username, 
+                    request.Firstname, 
+                    request.Lastname, 
+                    request.Password, 
+                    request.Email, 
+                    request.PhoneNumber, 
+                    cancellationToken);
 
-                await _eventPublisher.Publish(new UserRegisteredEvent(result.Id, result.ActivationId.Value, result.Email, result.Firstname, result.Lastname, result.Role.Value), cancellationToken);
+                await _eventPublisher.Publish(new UserRegisteredEvent(
+                    result.Id, 
+                    result.ActivationId.Value, 
+                    result.Email, 
+                    result.Firstname, 
+                    result.Lastname, 
+                    result.Role.Value), cancellationToken);
 
                 return RegistrationResult.Success(result.Id);
             }

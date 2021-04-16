@@ -45,6 +45,7 @@ namespace Auth.Tests
             var validUsername = "validusername";
             var validEmail = "valid@email.com";
             var validPassword = "ValidPassword123^";
+            var validPhoneNumber = "+48665467131";
             var firstname = "Bob";
             var lastname = "Dylan";
 
@@ -56,7 +57,7 @@ namespace Auth.Tests
                 .ReturnsAsync(false);
 
             //Act
-            var registeredUser = await sut.RegisterDriver(validUsername, firstname, lastname, validPassword, validEmail);
+            var registeredUser = await sut.RegisterDriver(validUsername, firstname, lastname, validPassword, validEmail, validPhoneNumber);
 
             //Assert
             Assert.NotNull(registeredUser);
@@ -70,9 +71,10 @@ namespace Auth.Tests
             var validUsername = "validusername";
             var validPassword = "ValidPassword123^";
             var validEmail = "valid@email.com";
+            var validPhoneNumber = "+48665467131";
             var firstname = "Bob";
             var lastname = "Dylan";
-            var user = User.Create(validUsername, firstname, lastname, validPassword, validEmail, UserRole.Driver);
+            var user = User.Create(validUsername, firstname, lastname, validPassword, validEmail, validPhoneNumber, UserRole.Driver);
             user.Activate(user.ActivationId.Value);
 
             _uowMock

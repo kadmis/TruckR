@@ -10,14 +10,16 @@ namespace Auth.Application.Commands
         public string Lastname { get; }
         public string Password { get; }
         public string Email { get; }
+        public string PhoneNumber { get; }
 
-        public DriverRegistrationCommand(string username, string firstname, string lastname, string password, string email)
+        public DriverRegistrationCommand(string username, string firstname, string lastname, string password, string email, string phoneNumber)
         {
             Username = username;
             Firstname = firstname;
             Lastname = lastname;
             Password = password;
             Email = email;
+            PhoneNumber = phoneNumber;
         }
     }
 }
