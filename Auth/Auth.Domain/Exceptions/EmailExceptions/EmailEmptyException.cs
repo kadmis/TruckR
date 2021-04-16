@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Auth.Domain.Exceptions.EmailExceptions
 {
-    internal class EmailEmptyException : Exception
+    public class EmailEmptyException : Exception
     {
         public EmailEmptyException() : base("Email cannot be empty.")
         {

@@ -22,8 +22,8 @@ namespace Email.API.Infrastructure.Messaging
             await _emailService.SendEmail(new EmailModel()
             {
                 Message = $"Activate your account here: https://localhost:44312/api/user/activate/{@event.Id}/{@event.ActivationId}",
-                RecipientAddress = @event.Email,
-                RecipientName = @event.Email,
+                RecipientAddress = @event.Email.Value,
+                RecipientName = @event.Email.Value,
                 Title = "Welcome to the TruckR system."
             }, cancellationToken);
         }

@@ -1,5 +1,5 @@
-﻿using Auth.Domain.Security.Encryption;
-using Auth.Infrastructure.Configuration;
+﻿using Auth.Application.Configuration;
+using Auth.Domain.Security.Encryption;
 using System;
 using System.IO;
 using System.Security.Cryptography;

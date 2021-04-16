@@ -1,19 +1,13 @@
-﻿using Auth.Domain.Creation;
-using Auth.Domain.Data.Entities;
+﻿using Auth.Domain.Data.Entities;
 using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Persistence;
 using Auth.Domain.Security.Passwords;
 using Auth.Domain.Services.Authentication;
 using Auth.Domain.Services.Registration;
 using Auth.Domain.Specifications.EmailSpecifications;
-using Auth.Domain.Specifications.EmailSpecifications.Interfaces;
 using Auth.Domain.Specifications.PasswordSpecifications;
 using Auth.Domain.Specifications.UsernameSpecifications;
-using Auth.Domain.Specifications.UsernameSpecifications.Interfaces;
-using Auth.Infrastructure.Creation;
-using Auth.Infrastructure.Security.Passwords;
 using Moq;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -31,7 +25,7 @@ namespace Auth.Tests
             var emailSpec = new EmailExists(_uowMock.Object);
             var usernameSpec = new UsernameExists(_uowMock.Object);
 
-            return new UserRegistrationService(_uowMock.Object, new UserFactory(), emailSpec, usernameSpec);
+            return new UserRegistrationService(_uowMock.Object, emailSpec, usernameSpec);
         }
 
         private IUserAuthenticationService SetupAuthenticationService()
@@ -44,12 +38,15 @@ namespace Auth.Tests
         }
 
         [Fact]
-        public async Task RegisterUser_ShouldSucceed()
+        public async Task RegisterDriver_ShouldSucceed()
         {
+            //Assign
             var sut = SetupRegistrationService();
             var validUsername = "validusername";
             var validEmail = "valid@email.com";
             var validPassword = "ValidPassword123^";
+            var firstname = "Bob";
+            var lastname = "Dylan";
 
             _uowMock
                 .Setup(x => x.UserRepository.EmailExists(It.IsAny<Email>(), CancellationToken.None))
@@ -58,19 +55,24 @@ namespace Auth.Tests
                 .Setup(x => x.UserRepository.UsernameExists(It.IsAny<Username>(), CancellationToken.None))
                 .ReturnsAsync(false);
 
-            var registeredUser = await sut.Register(validUsername, validPassword, validEmail);
+            //Act
+            var registeredUser = await sut.RegisterDriver(validUsername, firstname, lastname, validPassword, validEmail);
 
+            //Assert
             Assert.NotNull(registeredUser);
         }
 
         [Fact]
         public async Task AuthenticateUser_ShouldSucceed()
         {
+            //Assign
             var sut = SetupAuthenticationService();
             var validUsername = "validusername";
             var validPassword = "ValidPassword123^";
             var validEmail = "valid@email.com";
-            var user = new User(new Username(validUsername), new Password(validPassword), new Email(validEmail));
+            var firstname = "Bob";
+            var lastname = "Dylan";
+            var user = User.Create(validUsername, firstname, lastname, validPassword, validEmail, UserRole.Driver);
             user.Activate(user.ActivationId.Value);
 
             _uowMock
@@ -80,8 +82,10 @@ namespace Auth.Tests
                 .Setup(x => x.VerifyHashedPassword(It.IsAny<Password>(), It.IsAny<Password>()))
                 .Returns(true);
 
+            //Act
             var result = await sut.Authenticate(validUsername, validPassword);
 
+            //Assert
             Assert.NotNull(result);
         }
     }

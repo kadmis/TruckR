@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Auth.Domain.Exceptions.AuthenticationExceptions
 {
-    internal class InvalidPasswordException : Exception
+    public class InvalidPasswordException : Exception
     {
         public InvalidPasswordException():base("Invalid password.")
         {

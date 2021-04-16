@@ -1,5 +1,5 @@
-﻿using Auth.Domain.Creation;
-using Auth.Domain.Data.Entities;
+﻿using Auth.Domain.Data.Entities;
+using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Exceptions;
 using Auth.Domain.Exceptions.UsernameExceptions;
 using Auth.Domain.Persistence;
@@ -14,21 +14,32 @@ namespace Auth.Domain.Services.Registration
     public class UserRegistrationService : IUserRegistrationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserFactory _userFactory;
         private readonly IEmailSpecification _emailExists;
         private readonly IUsernameSpecification _usernameExists;
 
-        public UserRegistrationService(IUnitOfWork unitOfWork, IUserFactory userFactory, IEmailExists emailExists, IUsernameExists usernameExists)
+        public UserRegistrationService(IUnitOfWork unitOfWork, IEmailExists emailExists, IUsernameExists usernameExists)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            _userFactory = userFactory ?? throw new ArgumentNullException(nameof(userFactory));
             _emailExists = emailExists ?? throw new ArgumentNullException(nameof(emailExists));
             _usernameExists = usernameExists ?? throw new ArgumentNullException(nameof(usernameExists));
         }
 
-        public async Task<User> Register(string username, string password, string email, CancellationToken cancellationToken = default)
+        public async Task<User> RegisterDriver(string username, string firstname, string lastname, string password, string email, string phoneNumber, CancellationToken cancellationToken = default)
         {
-            var user = _userFactory.Create(username, password, email);
+            var user = User.Create(username, firstname, lastname, password, email, phoneNumber, UserRole.Driver);
+
+            await ThrowIfEmailExists(user, cancellationToken);
+            await ThrowIfUsernameExists(user, cancellationToken);
+
+            _unitOfWork.UserRepository.Add(user);
+            await _unitOfWork.Save(cancellationToken);
+
+            return user;
+        }
+
+        public async Task<User> RegisterDispatcher(string username, string firstname, string lastname, string password, string email, string phoneNumber, CancellationToken cancellationToken = default)
+        {
+            var user = User.Create(username, firstname, lastname, password, email, phoneNumber, UserRole.Dispatcher);
 
             await ThrowIfEmailExists(user, cancellationToken);
             await ThrowIfUsernameExists(user, cancellationToken);

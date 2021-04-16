@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Auth.Domain.Exceptions.EmailExceptions
 {
-    internal class EmailInvalidFormatException : Exception
+    public class EmailInvalidFormatException : Exception
     {
         public EmailInvalidFormatException():base("Invalid email format.")
         {

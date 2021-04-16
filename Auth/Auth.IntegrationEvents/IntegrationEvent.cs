@@ -5,6 +5,11 @@ namespace Auth.IntegrationEvents
 {
     public abstract class IntegrationEvent : IEvent
     {
-        public DateTime OccuredOn { get; protected set; }
+        public DateTime OccuredOn { get; }
+
+        public IntegrationEvent()
+        {
+            OccuredOn = DateTime.Now;
+        }
     }
 }

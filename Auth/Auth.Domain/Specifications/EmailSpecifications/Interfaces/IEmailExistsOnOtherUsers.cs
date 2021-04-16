@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Auth.Domain.Data.ValueObjects;
+using System;
 
 namespace Auth.Domain.Specifications.EmailSpecifications.Interfaces
 {

@@ -25,17 +25,6 @@ namespace Auth.Infrastructure.Persistence.Repositories
             return user.Id;
         }
 
-        public async Task Delete(Guid id, CancellationToken cancellationToken = default)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-            if (user == null)
-            {
-                throw new UserDoesntExistException();
-            }
-
-            user.Delete();
-        }
-
         public Task<bool> UsernameExists(Username username, CancellationToken cancellationToken = default)
         {
             return _context.Users.AnyAsync(x => x.Username.Value.Equals(username.Value), cancellationToken);
@@ -51,9 +40,9 @@ namespace Auth.Infrastructure.Persistence.Repositories
             return _context.Users.FirstOrDefaultAsync(x => x.Username.Value.Equals(username.Value), cancellationToken);
         }
 
-        public Task<User> FindById(Guid id, CancellationToken cancellationToken = default)
+        public async Task<User> FindById(Guid id, CancellationToken cancellationToken = default)
         {
-            return _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return await _context.Users.FindAsync(new object[] { id }, cancellationToken);
         }
 
         public Task<User> FindByEmail(Email email, CancellationToken cancellationToken = default)

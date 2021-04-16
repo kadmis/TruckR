@@ -1,19 +1,16 @@
-﻿using Auth.Domain.Creation;
-using Auth.Domain.Data.Entities;
+﻿using Auth.Application;
+using Auth.Application.Configuration;
 using Auth.Domain.Persistence;
 using Auth.Domain.Security.Encryption;
 using Auth.Domain.Security.Passwords;
 using Auth.Domain.Services.Authentication;
 using Auth.Domain.Services.Registration;
-using Auth.Domain.Services.UserOperations;
 using Auth.Domain.Specifications.EmailSpecifications;
 using Auth.Domain.Specifications.EmailSpecifications.Interfaces;
 using Auth.Domain.Specifications.PasswordSpecifications;
 using Auth.Domain.Specifications.PasswordSpecifications.Interfaces;
 using Auth.Domain.Specifications.UsernameSpecifications;
 using Auth.Domain.Specifications.UsernameSpecifications.Interfaces;
-using Auth.Infrastructure.Configuration;
-using Auth.Infrastructure.Creation;
 using Auth.Infrastructure.Messaging;
 using Auth.Infrastructure.Persistence;
 using Auth.Infrastructure.Persistence.Context;
@@ -34,11 +31,12 @@ namespace Auth.Infrastructure
         {
             services.AddPersistence(configuration);
             services.AddDomainServices();
-            services.AddFactories();
             services.AddDataEncryption();
             services.AddServiceConfiguration();
             services.AddSpecifications();
             services.AddEventBus();
+            services.AddMediator();
+            services.AddTokenGenerator();
         }
 
         private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -51,7 +49,6 @@ namespace Auth.Infrastructure
         {
             services.AddTransient<IUserRegistrationService, UserRegistrationService>();
             services.AddTransient<IUserAuthenticationService, UserAuthenticationService>();
-            services.AddTransient<IUserOperationsService, UserOperationsService>();
         }
 
         private static void AddSpecifications(this IServiceCollection services)
@@ -61,11 +58,6 @@ namespace Auth.Infrastructure
             services.AddTransient<IUsernameExists, UsernameExists>();
             services.AddTransient<IUsernameExistsOnOtherUsers, UsernameExistsOnOtherUsers>();
             services.AddTransient<IPasswordMatches, PasswordMatches>();
-        }
-
-        private static void AddFactories(this IServiceCollection services)
-        {
-            services.AddTransient<IUserFactory, UserFactory>();
         }
 
         private static void AddDataEncryption(this IServiceCollection services)
@@ -84,7 +76,8 @@ namespace Auth.Infrastructure
             services.AddRabbit();
             services.AddTransient<IEventPublisher<UserRegisteredEvent>, UserRegisteredEventPublisher>();
             services.AddTransient<IEventPublisher<UserResetPasswordEvent>, UserResetPasswordEventPublisher>();
-            services.AddTransient<IEventPublisher<UsernameRemindedEvent>, UsernameRemindedEventPublisher>();
+            services.AddTransient<IEventPublisher<UsernameReminderRequestedEvent>, UsernameReminderRequestedEventPublisher>();
+            services.AddTransient<IEventPublisher<UserDeletedEvent>, UserDeletedEventPublisher>();
         }
     }
 }

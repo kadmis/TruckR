@@ -1,9 +1,11 @@
 ﻿using Auth.Domain.Exceptions.EmailExceptions;
+using BuildingBlocks.Domain;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Auth.Domain.Data.ValueObjects
 {
-    public class Email : IValueObject<string>
+    public class Email : ValueObject
     {
         private const string _validFormat = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
         public string Value { get; }
@@ -23,25 +25,5 @@ namespace Auth.Domain.Data.ValueObjects
         }
         public Email(Email email):this(email.Value) { }
         private Email() { }
-
-        public bool Equals(Email email)
-        {
-            return Value.ToUpper().Equals(email.Value.ToUpper());
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Value.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Value;
-        }
     }
 }

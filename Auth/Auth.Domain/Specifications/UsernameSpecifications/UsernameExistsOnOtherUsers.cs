@@ -11,7 +11,7 @@ namespace Auth.Domain.Specifications.UsernameSpecifications
     public class UsernameExistsOnOtherUsers : IUsernameExistsOnOtherUsers
     {
         private readonly IUnitOfWork _uow;
-        private Guid _currentUserId;
+        private Guid? _currentUserId;
 
         public UsernameExistsOnOtherUsers(IUnitOfWork uow)
         {
@@ -26,12 +26,12 @@ namespace Auth.Domain.Specifications.UsernameSpecifications
 
         public async Task<bool> IsSatisfiedBy(Username username, CancellationToken cancellationToken = default)
         {
-            if (username == null || _currentUserId == Guid.Empty)
+            if (username == null || _currentUserId == Guid.Empty || !_currentUserId.HasValue)
             {
                 throw new ArgumentsNotProvidedException(nameof(UsernameExistsOnOtherUsers));
             }
 
-            return await _uow.UserRepository.UsernameExistsOnOtherUsers(username, _currentUserId, cancellationToken);
+            return await _uow.UserRepository.UsernameExistsOnOtherUsers(username, _currentUserId.Value, cancellationToken);
         }
     }
 }

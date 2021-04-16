@@ -1,16 +1,21 @@
 ﻿using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Exceptions.UserExceptions;
+using BuildingBlocks.Domain;
 using System;
 
 namespace Auth.Domain.Data.Entities
 {
-    public class User : IEntity<Guid>
+    public class User : IEntity<Guid>, IAggregateRoot
     {
         public Guid Id { get; }
 
+        public string Firstname { get; }
+        public string Lastname { get; }
         public Username Username { get; private set; }
         public Password Password { get; private set; }
         public Email Email { get; private set; }
+        public PhoneNumber PhoneNumber { get; private set; }
+        public UserRole Role { get; }
 
         public Guid? ActivationId { get; private set; }
         public bool Active { get; private set; }
@@ -24,20 +29,63 @@ namespace Auth.Domain.Data.Entities
         public bool IsDeleted => DeletedDate.HasValue;
         public bool Inactive => !Active;
 
-        public User(Guid id, Username username, Password password, Email email)
+        private User(Guid id, string firstname, string lastname, Username username, Password password, Email email, PhoneNumber phoneNumber, UserRole role)
         {
             Id = id;
+            Firstname = firstname;
+            Lastname = lastname;
             Username = username;
             Password = password;
             Email = email;
-            CreatedDate = DateTime.Now;
+            Role = role;
+            CreatedDate = DateTime.UtcNow;
             ModifiedDate = CreatedDate;
             ActivationId = Guid.NewGuid();
         }
-        public User(Username username, Password password, Email email) : this(Guid.NewGuid(), username, password, email)
-        {
-        }
         private User() { }
+
+        /// <summary>
+        /// Creates a new instance of a user entity with a given Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="firstname"></param>
+        /// <param name="lastname"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public static User Create(Guid id, string firstname, string lastname, string username, string password, string email, string phoneNumber, UserRole role)
+        {
+            return new User(
+                id, 
+                firstname, 
+                lastname, 
+                new Username(username), 
+                new Password(password), 
+                new Email(email), 
+                new PhoneNumber(phoneNumber), 
+                role);
+        }
+
+        /// <summary>
+        /// Creates a new instance of a user entity with automatically generated Id.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public static User Create(string firstname, string lastname, string username, string password, string email, string phoneNumber, UserRole role)
+        {
+            return new User(
+                Guid.NewGuid(), 
+                firstname, 
+                lastname, 
+                new Username(username), 
+                new Password(password), 
+                new Email(email), 
+                new PhoneNumber(phoneNumber), 
+                role);
+        }
 
         /// <summary>
         /// Sets user as deleted, inactive, removes username, removes email and resets password.
@@ -52,13 +100,13 @@ namespace Auth.Domain.Data.Entities
             Username = null;
             Password = Password.Randomize();
             Email = null;
-            DeletedDate = DateTime.Now;
+            DeletedDate = DateTime.UtcNow;
 
             return Modified();
         }
 
         /// <summary>
-        /// Activates user and removes activaion id.
+        /// Activates user and removes activation id.
         /// </summary>
         /// <param name="activationId"></param>
         /// <returns></returns>
@@ -123,38 +171,23 @@ namespace Auth.Domain.Data.Entities
         }
 
         /// <summary>
-        /// Changes username to new given username that has to be different than the previous one.
+        /// Changes phone number to a newly given.
         /// </summary>
-        /// <param name="newUsername"></param>
+        /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public User ChangeUsername(Username newUsername)
+        public User ChangePhoneNumber(PhoneNumber phoneNumber)
         {
             ThrowIfUserDeleted();
-            ThrowIfNewUsernameIsTheSame(newUsername);
+            ThrowIfInactive();
 
-            Username = newUsername;
+            PhoneNumber = phoneNumber;
 
-            return Modified();
-        }
-
-        /// <summary>
-        /// Changes email to new given email that has to be different than the previous one.
-        /// </summary>
-        /// <param name="newEmail"></param>
-        /// <returns></returns>
-        public User ChangeEmail(Email newEmail)
-        {
-            ThrowIfUserDeleted();
-            ThrowIfNewEmailIsTheSame(newEmail);
-
-            Email = newEmail;
-            
             return Modified();
         }
 
         private User Modified()
         {
-            ModifiedDate = DateTime.Now;
+            ModifiedDate = DateTime.UtcNow;
             return this;
         }
 
@@ -187,22 +220,6 @@ namespace Auth.Domain.Data.Entities
             if(!ActivationId.Equals(id))
             {
                 throw new InvalidActivationIdException();
-            }
-        }
-
-        private void ThrowIfNewUsernameIsTheSame(Username username)
-        {
-            if (Username.Equals(username))
-            {
-                throw new NewUsernameSameAsOldException();
-            }
-        }
-
-        private void ThrowIfNewEmailIsTheSame(Email email)
-        {
-            if (Email.Equals(email))
-            {
-                throw new NewEmailSameAsOldException();
             }
         }
 

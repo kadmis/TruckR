@@ -36,7 +36,7 @@ namespace Email.API
             services.AddRabbit();
             services.AddTransient<IEventHandler<UserRegisteredEvent>, UserRegisteredEventHandler>();
             services.AddTransient<IEventHandler<UserResetPasswordEvent>, UserResetPasswordEventHandler>();
-            services.AddTransient<IEventHandler<UsernameRemindedEvent>, UsernameRemindedEventHandler>();
+            services.AddTransient<IEventHandler<UsernameReminderRequestedEvent>, UsernameReminderRequestedEventHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +63,7 @@ namespace Email.API
             app
                 .AddHandler<UserRegisteredEvent>()
                 .AddHandler<UserResetPasswordEvent>()
-                .AddHandler<UsernameRemindedEvent>();
+                .AddHandler<UsernameReminderRequestedEvent>();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Auth.Domain.Specifications.EmailSpecifications
     public class EmailExistsOnOtherUsers : IEmailExistsOnOtherUsers
     {
         private readonly IUnitOfWork _uow;
-        private Guid _currentUserId;
+        private Guid? _currentUserId;
 
         public EmailExistsOnOtherUsers(IUnitOfWork uow)
         {
@@ -31,7 +31,7 @@ namespace Auth.Domain.Specifications.EmailSpecifications
                 throw new ArgumentsNotProvidedException(nameof(EmailExistsOnOtherUsers));
             }
 
-            return await _uow.UserRepository.EmailExistsOnOtherUsers(email, _currentUserId, cancellationToken);
+            return await _uow.UserRepository.EmailExistsOnOtherUsers(email, _currentUserId.Value, cancellationToken);
         }
     }
 }

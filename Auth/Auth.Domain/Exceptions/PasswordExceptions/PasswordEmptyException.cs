@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Auth.Domain.Exceptions.PasswordExceptions
 {
-    internal class PasswordEmptyException : Exception
+    public class PasswordEmptyException : Exception
     {
         public PasswordEmptyException():base("Password cannot be empty.")
         {

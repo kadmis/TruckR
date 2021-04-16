@@ -1,9 +1,11 @@
 ﻿using Auth.Domain.Exceptions.UsernameExceptions;
+using BuildingBlocks.Domain;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Auth.Domain.Data.ValueObjects
 {
-    public class Username : IValueObject<string>
+    public class Username : ValueObject
     {
         private const string _validFormat = @"^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
         private const int _minLength = 8;
@@ -29,25 +31,5 @@ namespace Auth.Domain.Data.ValueObjects
         }
         public Username(Username username) : this(username.Value) { }
         private Username() { }
-
-        public bool Equals(Username username)
-        {
-            return Value.ToUpper().Equals(username.Value.ToUpper());
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Value.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Value;
-        }
     }
 }

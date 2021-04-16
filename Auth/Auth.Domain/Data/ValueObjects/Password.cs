@@ -1,11 +1,12 @@
 ﻿using Auth.Domain.Exceptions.PasswordExceptions;
+using BuildingBlocks.Domain;
 using Fare;
 using System;
 using System.Text.RegularExpressions;
 
 namespace Auth.Domain.Data.ValueObjects
 {
-    public class Password : IValueObject<string>
+    public class Password : ValueObject
     {
         private const int _minLength = 8;
         private const string _validFormat = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Auth.API.Infrastructure.Commands;
+using Auth.Application.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +11,8 @@ namespace Auth.API.Controllers
     [Route("api/[controller]")]
     public class AuthController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public AuthController(IMediator mediator)
+        public AuthController(IMediator mediator):base(mediator)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         [HttpPost("authenticate")]
@@ -25,7 +22,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationCommand command, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Register([FromBody] DriverRegistrationCommand command, CancellationToken cancellationToken = default)
         {
             return new JsonResult(await _mediator.Send(command, cancellationToken));
         }

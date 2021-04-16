@@ -21,8 +21,8 @@ namespace Email.API.Infrastructure.Messaging
             await _service.SendEmail(new EmailModel
             {
                 Message = $"Your password has been reset. Use this token to set it again: {@event.ResetToken}",
-                RecipientAddress = @event.Email,
-                RecipientName = @event.Email,
+                RecipientAddress = @event.Email.Value,
+                RecipientName = @event.Email.Value,
                 Title = "Password has been reset."
             }, cancellationToken);
         }

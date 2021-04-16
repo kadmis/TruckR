@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Auth.Domain.Exceptions.PasswordExceptions
 {
-    internal class PasswordInvalidLengthException : Exception
+    public class PasswordInvalidLengthException : Exception
     {
         public PasswordInvalidLengthException(int minLength):base($"Password has to be at least {minLength} characters long.")
         {
