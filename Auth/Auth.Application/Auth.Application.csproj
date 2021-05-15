@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\BuildingBlocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\Shared\SharedRabbitMQ\SharedRabbitMQ.csproj" />
+    <ProjectReference Include="..\..\Shared\BuildingBlocks\BuildingBlocks.EventBus\BuildingBlocks.EventBus.csproj" />
     <ProjectReference Include="..\Auth.Domain\Auth.Domain.csproj" />
     <ProjectReference Include="..\Auth.IntegrationEvents\Auth.IntegrationEvents.csproj" />
   </ItemGroup>

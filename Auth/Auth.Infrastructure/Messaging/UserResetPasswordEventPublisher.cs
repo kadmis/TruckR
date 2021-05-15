@@ -1,6 +1,6 @@
 ﻿using Auth.IntegrationEvents;
-using SharedRabbitMQ.Externals.Events;
-using SharedRabbitMQ.Publishing;
+using BuildingBlocks.EventBus.Externals.Events;
+using BuildingBlocks.EventBus.Externals.Events.Publishing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,7 +1,7 @@
 ﻿using Auth.IntegrationEvents;
+using BuildingBlocks.EventBus.Externals.Events.Handling;
 using Email.API.Infrastructure.Models;
 using Email.API.Infrastructure.Services;
-using SharedRabbitMQ.Externals.Events.Handling;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,9 +20,9 @@ namespace Email.API.Infrastructure.Messaging
         {
             return _service.SendEmail(new EmailModel()
             {
-                RecipientAddress = @event.Email.Value,
+                RecipientAddress = @event.Email,
                 Message = "Your account has been deleted. Contact administration for details.",
-                RecipientName = @event.Email.Value,
+                RecipientName = @event.Email,
                 Title = "You account has been deleted."
             }, cancellationToken);
         }

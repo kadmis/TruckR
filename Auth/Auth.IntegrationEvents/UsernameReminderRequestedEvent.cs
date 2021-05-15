@@ -4,13 +4,13 @@ namespace Auth.IntegrationEvents
 {
     public class UsernameReminderRequestedEvent : IntegrationEvent
     {
-        public UsernameReminderRequestedEvent(Email email, Username username) : base()
+        public UsernameReminderRequestedEvent(string email, string username) : base()
         {
             Email = email;
             Username = username;
         }
 
-        public Email Email { get; }
-        public Username Username { get; }
+        public string Email { get; }
+        public string Username { get; }
     }
 }

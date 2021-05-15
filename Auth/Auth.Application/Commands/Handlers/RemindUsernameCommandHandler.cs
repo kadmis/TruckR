@@ -4,7 +4,7 @@ using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence;
 using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Handlers;
-using SharedRabbitMQ.Publishing;
+using BuildingBlocks.EventBus.Externals.Events.Publishing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +34,7 @@ namespace Auth.Application.Commands.Handlers
                     throw new UserDoesntExistException();
                 }
 
-                await _publisher.Publish(new UsernameReminderRequestedEvent(user.Email, user.Username), cancellationToken);
+                await _publisher.Publish(new UsernameReminderRequestedEvent(user.Email.Value, user.Username.Value), cancellationToken);
 
                 return RemindUsernameResult.Success();
             }

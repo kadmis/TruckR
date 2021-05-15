@@ -1,4 +1,5 @@
-﻿using Location.Domain.Repositories;
+﻿using BuildingBlocks.Domain;
+using Location.Domain.Repositories;
 using Location.Infrastructure.Cache.Interfaces;
 using Location.Infrastructure.Cache.Models;
 using Location.Infrastructure.Services.Interfaces;
@@ -29,7 +30,7 @@ namespace Location.Infrastructure.Services
         {
             for(int i=1;i<=7;i++)
             {
-                var key = CachedLocation.GenerateKey(DateTime.UtcNow.AddHours(-i));
+                var key = CachedLocation.GenerateKey(Clock.Now.AddHours(-i));
                 var cachedLocations = await _cachedLocationsService.GetAll(key);
 
                 if (cachedLocations.Any())

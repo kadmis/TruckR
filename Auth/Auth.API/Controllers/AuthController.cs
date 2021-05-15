@@ -18,13 +18,19 @@ namespace Auth.API.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticationCommand command, CancellationToken cancellationToken = default)
         {
-            return new JsonResult(await _mediator.Send(command, cancellationToken));
+            return new JsonResult(await Mediator.Send(command, cancellationToken));
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] DriverRegistrationCommand command, CancellationToken cancellationToken = default)
+        [HttpPost("register-driver")]
+        public async Task<IActionResult> RegisterDriver([FromBody] RegisterDriverCommand command, CancellationToken cancellationToken = default)
         {
-            return new JsonResult(await _mediator.Send(command, cancellationToken));
+            return new JsonResult(await Mediator.Send(command, cancellationToken));
+        }
+
+        [HttpPost("register-dispatcher")]
+        public async Task<IActionResult> RegisterDispatcher([FromBody] RegisterDispatcherCommand command, CancellationToken cancellationToken = default)
+        {
+            return new JsonResult(await Mediator.Send(command, cancellationToken));
         }
     }
 }

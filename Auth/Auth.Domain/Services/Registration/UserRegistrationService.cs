@@ -26,7 +26,7 @@ namespace Auth.Domain.Services.Registration
 
         public async Task<User> RegisterDriver(string username, string firstname, string lastname, string password, string email, string phoneNumber, CancellationToken cancellationToken = default)
         {
-            var user = User.Create(username, firstname, lastname, password, email, phoneNumber, UserRole.Driver);
+            var user = User.Create(firstname, lastname, username, password, email, phoneNumber, UserRole.Driver);
 
             await ThrowIfEmailExists(user, cancellationToken);
             await ThrowIfUsernameExists(user, cancellationToken);
@@ -39,7 +39,7 @@ namespace Auth.Domain.Services.Registration
 
         public async Task<User> RegisterDispatcher(string username, string firstname, string lastname, string password, string email, string phoneNumber, CancellationToken cancellationToken = default)
         {
-            var user = User.Create(username, firstname, lastname, password, email, phoneNumber, UserRole.Dispatcher);
+            var user = User.Create(firstname, lastname, username, password, email, phoneNumber, UserRole.Dispatcher);
 
             await ThrowIfEmailExists(user, cancellationToken);
             await ThrowIfUsernameExists(user, cancellationToken);

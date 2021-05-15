@@ -1,4 +1,6 @@
 using Auth.IntegrationEvents;
+using BuildingBlocks.EventBus.Externals;
+using BuildingBlocks.EventBus.Externals.Events.Handling;
 using Email.API.Infrastructure.Configuration;
 using Email.API.Infrastructure.Messaging;
 using Email.API.Infrastructure.Services;
@@ -8,8 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SharedRabbitMQ;
-using SharedRabbitMQ.Externals.Events.Handling;
 
 namespace Email.API
 {

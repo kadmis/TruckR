@@ -26,7 +26,7 @@ namespace Email.API.Infrastructure.Services
                 await client.ConnectAsync(_configuration.Server, _configuration.Port, true, cancellationToken);
                 await client.AuthenticateAsync(_configuration.Email, _configuration.Password, cancellationToken);
                 await client.SendAsync(CreateMessage(email), cancellationToken);
-                await client.DisconnectAsync(true);
+                await client.DisconnectAsync(true, cancellationToken);
             }
         }
 

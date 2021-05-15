@@ -1,4 +1,4 @@
-﻿using SharedRabbitMQ.Externals.Events;
+﻿using BuildingBlocks.EventBus.Externals.Events;
 using System;
 
 namespace Auth.IntegrationEvents

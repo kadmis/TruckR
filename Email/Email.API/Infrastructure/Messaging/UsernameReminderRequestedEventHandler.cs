@@ -1,7 +1,7 @@
 ﻿using Auth.IntegrationEvents;
+using BuildingBlocks.EventBus.Externals.Events.Handling;
 using Email.API.Infrastructure.Models;
 using Email.API.Infrastructure.Services;
-using SharedRabbitMQ.Externals.Events.Handling;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +21,9 @@ namespace Email.API.Infrastructure.Messaging
         {
             return _service.SendEmail(new EmailModel()
             {
-                Message = $"Your username is: {@event.Username.Value}",
-                RecipientAddress = @event.Email.Value,
-                RecipientName = @event.Email.Value,
+                Message = $"Your username is: {@event.Username}",
+                RecipientAddress = @event.Email,
+                RecipientName = @event.Email,
                 Title = "Reminded username."
             }, cancellationToken);
         }

@@ -1,6 +1,7 @@
 ﻿using Location.Application.DTO;
 using Location.Domain.Services;
 using Location.Infrastructure.Cache.Interfaces;
+using Location.Infrastructure.Cache.Models;
 using System.Threading.Tasks;
 
 namespace Location.Infrastructure.Services
@@ -16,7 +17,7 @@ namespace Location.Infrastructure.Services
 
         public Task AddAsync(LocationModel item)
         {
-            return _cacheService.Add(new Cache.Models.CachedLocation(item.Latitude, item.Longitude, item.UserId));
+            return _cacheService.Add(new CachedLocation(item.Latitude, item.Longitude, item.UserId));
         }
     }
 }

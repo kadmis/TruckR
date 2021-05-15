@@ -36,6 +36,12 @@ namespace Auth.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Firstname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lastname")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
@@ -83,6 +89,40 @@ namespace Auth.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
+                    b.OwnsOne("Auth.Domain.Data.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Number")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Phone");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsOne("Auth.Domain.Data.ValueObjects.UserRole", "Role", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Role");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsOne("Auth.Domain.Data.ValueObjects.Username", "Username", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -103,6 +143,10 @@ namespace Auth.Infrastructure.Migrations
                     b.Navigation("Email");
 
                     b.Navigation("Password");
+
+                    b.Navigation("PhoneNumber");
+
+                    b.Navigation("Role");
 
                     b.Navigation("Username");
                 });

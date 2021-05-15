@@ -17,11 +17,11 @@ using Auth.Infrastructure.Persistence.Context;
 using Auth.Infrastructure.Security.Encryption;
 using Auth.Infrastructure.Security.Passwords;
 using Auth.IntegrationEvents;
+using BuildingBlocks.EventBus.Externals;
+using BuildingBlocks.EventBus.Externals.Events.Publishing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SharedRabbitMQ;
-using SharedRabbitMQ.Publishing;
 
 namespace Auth.Infrastructure
 {
@@ -35,8 +35,7 @@ namespace Auth.Infrastructure
             services.AddServiceConfiguration();
             services.AddSpecifications();
             services.AddEventBus();
-            services.AddMediator();
-            services.AddTokenGenerator();
+            services.AddApplicationLayer();
         }
 
         private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -78,6 +77,8 @@ namespace Auth.Infrastructure
             services.AddTransient<IEventPublisher<UserResetPasswordEvent>, UserResetPasswordEventPublisher>();
             services.AddTransient<IEventPublisher<UsernameReminderRequestedEvent>, UsernameReminderRequestedEventPublisher>();
             services.AddTransient<IEventPublisher<UserDeletedEvent>, UserDeletedEventPublisher>();
+            services.AddTransient<IEventPublisher<DispatcherActivatedEvent>, DispatcherActivatedEventPublisher>();
+            services.AddTransient<IEventPublisher<DriverActivatedEvent>, DriverActivatedEventPublisher>();
         }
     }
 }

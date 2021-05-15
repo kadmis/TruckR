@@ -9,13 +9,13 @@ namespace Auth.Domain.Data.Entities
     {
         public Guid Id { get; }
 
-        public string Firstname { get; }
-        public string Lastname { get; }
+        public string Firstname { get; private set; }
+        public string Lastname { get; private set; }
         public Username Username { get; private set; }
         public Password Password { get; private set; }
         public Email Email { get; private set; }
         public PhoneNumber PhoneNumber { get; private set; }
-        public UserRole Role { get; }
+        public UserRole Role { get; private set; }
 
         public Guid? ActivationId { get; private set; }
         public bool Active { get; private set; }
@@ -37,8 +37,9 @@ namespace Auth.Domain.Data.Entities
             Username = username;
             Password = password;
             Email = email;
+            PhoneNumber = phoneNumber;
             Role = role;
-            CreatedDate = DateTime.UtcNow;
+            CreatedDate = Clock.Now;
             ModifiedDate = CreatedDate;
             ActivationId = Guid.NewGuid();
         }
@@ -100,7 +101,7 @@ namespace Auth.Domain.Data.Entities
             Username = null;
             Password = Password.Randomize();
             Email = null;
-            DeletedDate = DateTime.UtcNow;
+            DeletedDate = Clock.Now;
 
             return Modified();
         }
@@ -187,7 +188,7 @@ namespace Auth.Domain.Data.Entities
 
         private User Modified()
         {
-            ModifiedDate = DateTime.UtcNow;
+            ModifiedDate = Clock.Now;
             return this;
         }
 

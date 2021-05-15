@@ -4,7 +4,7 @@ using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence;
 using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Handlers;
-using SharedRabbitMQ.Publishing;
+using BuildingBlocks.EventBus.Externals.Events.Publishing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +38,7 @@ namespace Auth.Application.Commands.Handlers
                 user.ResetPassword();
                 await _uow.Save(cancellationToken);
 
-                await _publisher.Publish(new UserResetPasswordEvent(user.Email, user.PasswordResetToken.Value, user.Id), cancellationToken);
+                await _publisher.Publish(new UserResetPasswordEvent(user.Email.Value, user.PasswordResetToken.Value, user.Id), cancellationToken);
 
                 return RemindPasswordResult.Success();
             }

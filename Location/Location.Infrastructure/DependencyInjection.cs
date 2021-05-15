@@ -2,7 +2,6 @@
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
-using Location.Application;
 using Location.Application.DTO;
 using Location.Domain.Repositories;
 using Location.Domain.Services;
@@ -32,7 +31,6 @@ namespace Location.Infrastructure.DependencyInjection
             services.AddServices();
             services.AddTemporaryStorageServices();
             services.AddHangfire(configuration);
-            services.AddMediator();
         }
 
         public static void UseInfrastructure(this IApplicationBuilder app)

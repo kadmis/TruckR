@@ -1,5 +1,6 @@
 using BuildingBlocks.API.ServicesExtensions;
 using Location.API.Hubs;
+using Location.Application;
 using Location.Infrastructure.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,9 +27,10 @@ namespace Location.API
         {
             services.AddControllers();
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
-            services.AddJwt(Configuration);
+            services.AddJwtAuthentication(Configuration);
             services.AddSignalR();
             services.AddInfrastructure(Configuration);
+            services.AddApplication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

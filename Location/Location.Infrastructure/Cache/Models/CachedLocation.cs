@@ -1,4 +1,5 @@
-﻿using Location.Domain.ValueObjects;
+﻿using BuildingBlocks.Domain;
+using Location.Domain.ValueObjects;
 using ProtoBuf;
 using System;
 
@@ -24,7 +25,7 @@ namespace Location.Infrastructure.Cache.Models
             Latitude = latitude;
             Longitude = longitude;
             UserId = userId;
-            TimeStamp = DateTime.UtcNow;
+            TimeStamp = Clock.Now;
         }
         public CachedLocation()
         {
@@ -38,7 +39,7 @@ namespace Location.Infrastructure.Cache.Models
         }
         public static string GenerateKey()
         {
-            return GenerateKey(DateTime.UtcNow);
+            return GenerateKey(Clock.Now);
         }
 
         public Coordinates ToCoordinates()

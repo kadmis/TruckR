@@ -41,6 +41,20 @@ namespace Auth.Infrastructure.Persistence.Configuration
                 .Property(x => x.Value)
                 .HasConversion(new HashedPasswordConverter(_hasher))
                 .HasColumnName("Password");
+            builder
+                .OwnsOne(x => x.PhoneNumber)
+                .Property(x => x.Number)
+                .HasConversion(new EncryptedConverter(_encryptor))
+                .HasColumnName("Phone");
+            builder
+                .OwnsOne(x => x.Role)
+                .Property(x => x.Value)
+                .HasColumnName("Role");
+            builder
+                .OwnsOne(x => x.Username)
+                .Property(x => x.Value)
+                .HasConversion(new EncryptedConverter(_encryptor))
+                .HasColumnName("Username");
         }
     }
 }

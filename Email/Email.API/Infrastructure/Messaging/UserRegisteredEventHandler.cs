@@ -1,7 +1,7 @@
 ﻿using Auth.IntegrationEvents;
+using BuildingBlocks.EventBus.Externals.Events.Handling;
 using Email.API.Infrastructure.Models;
 using Email.API.Infrastructure.Services;
-using SharedRabbitMQ.Externals.Events.Handling;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,8 +22,8 @@ namespace Email.API.Infrastructure.Messaging
             await _emailService.SendEmail(new EmailModel()
             {
                 Message = $"Activate your account here: https://localhost:44312/api/user/activate/{@event.Id}/{@event.ActivationId}",
-                RecipientAddress = @event.Email.Value,
-                RecipientName = @event.Email.Value,
+                RecipientAddress = @event.Email,
+                RecipientName = @event.Email,
                 Title = "Welcome to the TruckR system."
             }, cancellationToken);
         }

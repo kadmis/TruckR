@@ -7,12 +7,12 @@ namespace Auth.IntegrationEvents
     {
         public Guid Id { get; }
         public Guid ActivationId { get; }
-        public Email Email { get; }
+        public string Email { get; }
         public string Firstname { get; }
         public string Lastname { get; }
         public string Role { get; }
 
-        public UserRegisteredEvent(Guid id, Guid activationId, Email email, string firstname, string lastname, string role) : base()
+        public UserRegisteredEvent(Guid id, Guid activationId, string email, string firstname, string lastname, string role) : base()
         {
             Id = id;
             ActivationId = activationId;

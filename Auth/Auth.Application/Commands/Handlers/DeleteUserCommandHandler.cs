@@ -5,7 +5,7 @@ using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence;
 using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Handlers;
-using SharedRabbitMQ.Publishing;
+using BuildingBlocks.EventBus.Externals.Events.Publishing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +40,7 @@ namespace Auth.Application.Commands.Handlers
                 user.Delete();
 
                 await _unitOfWork.Save(cancellationToken);
-                await _publisher.Publish(new UserDeletedEvent(userId, emailCopy), cancellationToken);
+                await _publisher.Publish(new UserDeletedEvent(userId, emailCopy.Value), cancellationToken);
 
                 return UserDeletionResult.Success(userId);
             }

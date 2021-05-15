@@ -5,11 +5,11 @@ namespace Auth.IntegrationEvents
 {
     public class UserResetPasswordEvent : IntegrationEvent
     {
-        public Email Email { get; }
+        public string Email { get; }
         public Guid UserId { get; }
         public Guid ResetToken { get; }
 
-        public UserResetPasswordEvent(Email email, Guid resetToken, Guid userId) : base()
+        public UserResetPasswordEvent(string email, Guid resetToken, Guid userId) : base()
         {
             Email = email;
             ResetToken = resetToken;

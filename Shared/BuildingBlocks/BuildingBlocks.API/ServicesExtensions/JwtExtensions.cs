@@ -8,7 +8,7 @@ namespace BuildingBlocks.API.ServicesExtensions
 {
     public static class JwtExtensions
     {
-        public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
+        public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddAuthentication(opt=> 
