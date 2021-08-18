@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\BuildingBlocks\BuildingBlocks.EventBus\BuildingBlocks.EventBus.csproj" />
+    <ProjectReference Include="..\Transport.Domain\Transport.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

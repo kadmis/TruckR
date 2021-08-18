@@ -8,9 +8,9 @@ namespace Transport.Infrastructure.Persistence.Files
 {
     public class LocalFilesStorage : IFilesStorage
     {
-        private readonly FilesConfiguration _configuration;
+        private readonly LocalFilesConfiguration _configuration;
 
-        public LocalFilesStorage(FilesConfiguration configuration)
+        public LocalFilesStorage(LocalFilesConfiguration configuration)
         {
             _configuration = configuration;
         }

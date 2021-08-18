@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Location.Domain.Entities
 {
-    public class Statistic : IEntity<Guid>
+    public class Statistic : Entity
     {
         public Guid Id { get; private set; }
         public Guid UserId { get; private set; }

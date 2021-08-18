@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Transport.Domain.Documents
 {
-    public class Document : IEntity<Guid>
+    public class Document : Entity
     {
         public Guid Id { get; private set; }
 

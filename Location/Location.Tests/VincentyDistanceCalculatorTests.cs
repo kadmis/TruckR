@@ -1,6 +1,5 @@
 using Location.Domain.Services;
 using Location.Domain.ValueObjects;
-using Location.Infrastructure.Services;
 using Xunit;
 
 namespace Location.Tests

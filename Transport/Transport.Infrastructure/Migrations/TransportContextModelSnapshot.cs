@@ -19,6 +19,32 @@ namespace Transport.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("BuildingBlocks.EventBus.EventualConsistency.Database.EventEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AssemblyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OccuredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SerializedEvent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Events");
+                });
+
             modelBuilder.Entity("Transport.Domain.Assignments.Assignment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -50,6 +76,10 @@ namespace Transport.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("DispatcherId");
 
+                    b.Property<Guid?>("_driverId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DriverId");
+
                     b.Property<string>("_title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -60,50 +90,19 @@ namespace Transport.Infrastructure.Migrations
                     b.ToTable("Assignments");
                 });
 
-            modelBuilder.Entity("Transport.Domain.Dispatchers.Dispatcher", b =>
+            modelBuilder.Entity("Transport.Domain.Groups.TransportGroup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("_email")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Email");
-
-                    b.Property<string>("_fullname")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Fullname");
-
-                    b.Property<string>("_phoneNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Phone");
+                    b.Property<Guid>("_dispatcherId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DispatcherId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Dispatchers");
-                });
-
-            modelBuilder.Entity("Transport.Domain.Drivers.Driver", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("_email")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Email");
-
-                    b.Property<string>("_fullname")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Fullname");
-
-                    b.Property<string>("_phoneNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Phone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Drivers");
+                    b.ToTable("TransportGroups");
                 });
 
             modelBuilder.Entity("Transport.Domain.Assignments.Assignment", b =>
@@ -199,6 +198,31 @@ namespace Transport.Infrastructure.Migrations
                     b.Navigation("_start");
 
                     b.Navigation("_transportDocument");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Groups.TransportGroup", b =>
+                {
+                    b.OwnsMany("Transport.Domain.Groups.Driver", "_drivers", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("_groupId")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("GroupId");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("_groupId");
+
+                            b1.ToTable("Drivers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("_groupId");
+                        });
+
+                    b.Navigation("_drivers");
                 });
 #pragma warning restore 612, 618
         }

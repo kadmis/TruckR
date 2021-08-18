@@ -6,7 +6,7 @@ namespace Auth.Domain.Exceptions.UserExceptions
 {
     public class UserDeletedException : Exception
     {
-        public UserDeletedException():base("User is  deleted.")
+        public UserDeletedException():base("User is deleted.")
         {
         }
     }

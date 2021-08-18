@@ -1,4 +1,6 @@
+using Auth.IntegrationEvents;
 using BuildingBlocks.API.ServicesExtensions;
+using BuildingBlocks.EventBus.Externals;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +31,6 @@ namespace Transport.API
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
             services.AddJwtAuthentication(Configuration);
             services.AddInfrastructure(Configuration);
-            services.AddMediator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,14 +55,10 @@ namespace Transport.API
             {
                 endpoints.MapControllers();
             });
-        }
-    }
 
-    static class MediatRExtensions
-    {
-        public static void AddMediator(this IServiceCollection services)
-        {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            app
+                .AddHandler<DispatcherActivatedEvent>()
+                .AddHandler<DriverActivatedEvent>();
         }
     }
 }

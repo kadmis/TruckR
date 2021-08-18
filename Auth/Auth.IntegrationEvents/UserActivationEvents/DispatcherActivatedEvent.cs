@@ -1,21 +1,15 @@
-﻿using Auth.Domain.Data.ValueObjects;
+﻿using BuildingBlocks.EventBus.EventualConsistency;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.IntegrationEvents
 {
-    public class DispatcherActivatedEvent : UserActivatedEvent
+    public class DispatcherActivatedEvent : IntegrationEvent
     {
-        public DispatcherActivatedEvent(
-            Guid id, 
-            string email, 
-            string firstname, 
-            string lastname, 
-            string phoneNumber) : base(id, email, firstname, lastname, phoneNumber)
+        public Guid UserId { get; }
+
+        public DispatcherActivatedEvent(Guid userId):base()
         {
+            UserId = userId;
         }
     }
 }

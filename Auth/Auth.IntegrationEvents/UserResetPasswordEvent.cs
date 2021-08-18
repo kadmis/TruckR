@@ -1,4 +1,4 @@
-﻿using Auth.Domain.Data.ValueObjects;
+﻿using BuildingBlocks.EventBus.EventualConsistency;
 using System;
 
 namespace Auth.IntegrationEvents

@@ -1,5 +1,5 @@
 ﻿using Location.Application.DTO.Filters;
-using Location.Application.Queries;
+using Location.Application.Queries.GetStatisticsForUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

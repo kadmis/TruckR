@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Transport.Domain.Assignments;
-using Transport.Domain.Drivers;
 
 namespace Transport.Application.Assignments.Commands.TakeAssignment
 {
@@ -15,16 +14,13 @@ namespace Transport.Application.Assignments.Commands.TakeAssignment
     {
         private readonly IIdentityAccessor _identityAccessor;
         private readonly IAssignmentsRepository _assignmentsRepository;
-        private readonly IDriversRepository _driversRepository;
 
         public TakeAssignmentCommandHandler(
             IIdentityAccessor identityAccessor, 
-            IAssignmentsRepository assignmentsRepository, 
-            IDriversRepository driversRepository)
+            IAssignmentsRepository assignmentsRepository)
         {
             _identityAccessor = identityAccessor;
             _assignmentsRepository = assignmentsRepository;
-            _driversRepository = driversRepository;
         }
 
         public async Task<TakeAssignmentResult> Handle(TakeAssignmentCommand request, CancellationToken cancellationToken)
@@ -35,9 +31,7 @@ namespace Transport.Application.Assignments.Commands.TakeAssignment
 
                 var assignment = await _assignmentsRepository.Find(request.AssignmentId, cancellationToken);
 
-                var driver = await _driversRepository.FindById(user.UserId, cancellationToken);
-
-                assignment.AssignDriver(driver);
+                //assignment.AssignDriver(driver);
 
                 return TakeAssignmentResult.Success();
             }

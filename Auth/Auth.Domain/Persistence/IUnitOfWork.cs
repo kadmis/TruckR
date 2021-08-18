@@ -8,5 +8,6 @@ namespace Auth.Domain.Persistence
     {
         Task<int> Save(CancellationToken cancellationToken = default);
         IUserRepository UserRepository { get; }
+        IUserAuthenticationRepository UserAuthenticationRepository { get; }
     }
 }

@@ -30,7 +30,6 @@ namespace Location.API
             services.AddJwtAuthentication(Configuration);
             services.AddSignalR();
             services.AddInfrastructure(Configuration);
-            services.AddApplication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +56,8 @@ namespace Location.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -53,6 +53,31 @@ namespace Auth.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Auth.Domain.Data.Entities.UserAuthentication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AuthenticationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RefreshToken")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAuthentications");
+                });
+
             modelBuilder.Entity("Auth.Domain.Data.Entities.User", b =>
                 {
                     b.OwnsOne("Auth.Domain.Data.ValueObjects.Email", "Email", b1 =>
@@ -149,6 +174,15 @@ namespace Auth.Infrastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("Username");
+                });
+
+            modelBuilder.Entity("Auth.Domain.Data.Entities.UserAuthentication", b =>
+                {
+                    b.HasOne("Auth.Domain.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

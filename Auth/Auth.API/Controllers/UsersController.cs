@@ -1,6 +1,8 @@
-﻿using Auth.Application.Commands;
-using Auth.Application.Models.Requests;
-using BuildingBlocks.Application.Identity;
+﻿using Auth.Application.Commands.Activate;
+using Auth.Application.Commands.RemindPassword;
+using Auth.Application.Commands.RemindUsername;
+using Auth.Application.Commands.ResetPassword;
+using Auth.Application.Commands.SetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,11 @@ namespace Auth.API.Controllers
     [ApiController]
     public class UsersController : BaseController
     {
-        public UsersController(IMediator mediator, IIdentityAccessor identity) : base(mediator, identity)
+        public UsersController(IMediator mediator) : base(mediator)
         {
         }
 
-        [HttpGet("activate/{userId}/{activationId}")]
+        [HttpPatch("activate/{userId}/{activationId}")]
         public async Task<IActionResult> Activate(Guid userId, Guid activationId, CancellationToken cancellationToken = default)
         {
             return new JsonResult(await Mediator.Send(new ActivateUserCommand(userId, activationId), cancellationToken));
@@ -28,19 +30,19 @@ namespace Auth.API.Controllers
         [HttpGet("reset-password")]
         public async Task<IActionResult> ResetPassword(CancellationToken cancellationToken = default)
         {
-            return new JsonResult(await Mediator.Send(new ResetPasswordCommand(UserId()), cancellationToken));
+            return new JsonResult(await Mediator.Send(new ResetPasswordCommand(), cancellationToken));
         }
 
         [HttpPatch("set-password")]
-        public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordCommand command, CancellationToken cancellationToken = default)
         {
-            return new JsonResult(await Mediator.Send(new SetPasswordCommand(request.UserId, request.ResetToken, request.Password), cancellationToken));
+            return new JsonResult(await Mediator.Send(command, cancellationToken));
         }
 
         [HttpGet("remind-password")]
-        public async Task<IActionResult> RemindPassword([FromQuery] RemindPasswordRequest request, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> RemindPassword([FromQuery] RemindPasswordCommand command, CancellationToken cancellationToken = default)
         {
-            return new JsonResult(await Mediator.Send(new RemindPasswordCommand(request.Email, request.Username), cancellationToken));
+            return new JsonResult(await Mediator.Send(command, cancellationToken));
         }
 
         [HttpGet("remind-username")]

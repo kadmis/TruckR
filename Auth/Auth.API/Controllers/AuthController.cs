@@ -1,7 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Auth.Application.Commands;
+using Auth.Application.Commands.Authenticate;
+using Auth.Application.Commands.RefreshToken;
+using Auth.Application.Commands.RegisterDispatcher;
+using Auth.Application.Commands.RegisterDriver;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +19,12 @@ namespace Auth.API.Controllers
 
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticationCommand command, CancellationToken cancellationToken = default)
+        {
+            return new JsonResult(await Mediator.Send(command, cancellationToken));
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenCommand command, CancellationToken cancellationToken = default)
         {
             return new JsonResult(await Mediator.Send(command, cancellationToken));
         }

@@ -1,5 +1,7 @@
 ﻿using Auth.Application.Configuration;
 using Auth.Domain.Data.Entities;
+using Auth.Domain.Data.ValueObjects;
+using Auth.Domain.Services.TokenGeneration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,16 +25,17 @@ namespace Auth.Application.JWT
             _expireInMinutes = configuration.JwtExpireInMinutes;
         }
 
-        public string GenerateFor(User user)
+        public Token GenerateFor(User user, UserAuthentication userAuthentication)
         {
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.Name, user.Username.Value));
             claims.AddClaim(new Claim(ClaimTypes.Email, user.Email.Value));
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claims.AddClaim(new Claim(ClaimTypes.Role, user.Role.Value));
+            claims.AddClaim(new Claim(ClaimTypes.Sid, userAuthentication.Id.ToString()));
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateJwtSecurityToken(new SecurityTokenDescriptor()
+            var descriptor = new SecurityTokenDescriptor()
             {
                 Audience = _audience,
                 Issuer = _issuer,
@@ -40,9 +43,10 @@ namespace Auth.Application.JWT
                 SigningCredentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256),
                 Expires = DateTime.UtcNow.AddMinutes(_expireInMinutes),
                 NotBefore = DateTime.UtcNow
-            });
+            };
+            var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
 
-            return tokenHandler.WriteToken(securityToken);
+            return new Token(tokenHandler.WriteToken(securityToken), descriptor.Expires.Value);
         }
     }
 }

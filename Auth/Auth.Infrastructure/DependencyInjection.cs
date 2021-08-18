@@ -3,7 +3,6 @@ using Auth.Application.Configuration;
 using Auth.Domain.Persistence;
 using Auth.Domain.Security.Encryption;
 using Auth.Domain.Security.Passwords;
-using Auth.Domain.Services.Authentication;
 using Auth.Domain.Services.Registration;
 using Auth.Domain.Specifications.EmailSpecifications;
 using Auth.Domain.Specifications.EmailSpecifications.Interfaces;
@@ -47,7 +46,6 @@ namespace Auth.Infrastructure
         private static void AddDomainServices(this IServiceCollection services)
         {
             services.AddTransient<IUserRegistrationService, UserRegistrationService>();
-            services.AddTransient<IUserAuthenticationService, UserAuthenticationService>();
         }
 
         private static void AddSpecifications(this IServiceCollection services)

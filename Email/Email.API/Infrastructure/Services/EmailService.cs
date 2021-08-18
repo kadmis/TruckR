@@ -1,7 +1,8 @@
 ﻿using Email.API.Infrastructure.Configuration;
-using Email.API.Infrastructure.Models;
+using Email.API.Infrastructure.Database.Entities;
 using MailKit.Net.Smtp;
 using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,27 +18,37 @@ namespace Email.API.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmail(EmailModel email, CancellationToken cancellationToken = default)
+        public async Task<bool> SendEmail(EmailQueueItem email, CancellationToken cancellationToken = default)
         {
-            using (var client = new SmtpClient())
+            try
             {
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                using (var client = new SmtpClient())
+                {
+                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                await client.ConnectAsync(_configuration.Server, _configuration.Port, true, cancellationToken);
-                await client.AuthenticateAsync(_configuration.Email, _configuration.Password, cancellationToken);
-                await client.SendAsync(CreateMessage(email), cancellationToken);
-                await client.DisconnectAsync(true, cancellationToken);
+                    await client.ConnectAsync(_configuration.Server, _configuration.Port, true, cancellationToken);
+                    await client.AuthenticateAsync(_configuration.Email, _configuration.Password, cancellationToken);
+                    await client.SendAsync(CreateMessage(email), cancellationToken);
+                    await client.DisconnectAsync(true, cancellationToken);
+                }
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
             }
         }
 
-        private MimeMessage CreateMessage(EmailModel email)
+        private MimeMessage CreateMessage(EmailQueueItem email)
         {
+            var emailData = email.EmailData;
             return new MimeMessage
                 (
                     new List<MailboxAddress> { new MailboxAddress(_configuration.Name, _configuration.Email) },
-                    new List<MailboxAddress> { new MailboxAddress(email.RecipientName, email.RecipientAddress) },
-                    email.Title,
-                    new TextPart(MimeKit.Text.TextFormat.Html) { Text = email.Message }
+                    new List<MailboxAddress> { new MailboxAddress(emailData.Name, emailData.Address) },
+                    emailData.Title,
+                    new TextPart(MimeKit.Text.TextFormat.Html) { Text = emailData.Message }
                 );
         }
     }

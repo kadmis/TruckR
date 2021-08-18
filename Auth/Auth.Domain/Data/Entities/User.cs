@@ -1,11 +1,11 @@
-﻿using Auth.Domain.Data.ValueObjects;
-using Auth.Domain.Exceptions.UserExceptions;
+﻿using Auth.Domain.Data.Rules;
+using Auth.Domain.Data.ValueObjects;
 using BuildingBlocks.Domain;
 using System;
 
 namespace Auth.Domain.Data.Entities
 {
-    public class User : IEntity<Guid>, IAggregateRoot
+    public class User : Entity, IAggregateRoot
     {
         public Guid Id { get; }
 
@@ -25,9 +25,6 @@ namespace Auth.Domain.Data.Entities
         public DateTime CreatedDate { get; private set; }
         public DateTime ModifiedDate { get; private set; }
         public DateTime? DeletedDate { get; private set; }
-
-        public bool IsDeleted => DeletedDate.HasValue;
-        public bool Inactive => !Active;
 
         private User(Guid id, string firstname, string lastname, Username username, Password password, Email email, PhoneNumber phoneNumber, UserRole role)
         {
@@ -94,7 +91,7 @@ namespace Auth.Domain.Data.Entities
         /// <returns></returns>
         public User Delete()
         {
-            ThrowIfUserDeleted();
+            CheckRule(new UserCannotBeInDeletedState(this));
 
             Active = false;
             ActivationId = null;
@@ -113,9 +110,9 @@ namespace Auth.Domain.Data.Entities
         /// <returns></returns>
         public User Activate(Guid activationId)
         {
-            ThrowIfUserDeleted();
-            ThrowIfActive();
-            ThrowIfActivationIdInvalid(activationId);
+            CheckRule(new UserCannotBeInDeletedState(this));
+            CheckRule(new UserCannotBeInActiveState(this));
+            CheckRule(new ActivationTokenHasToBeValid(activationId, this));
 
             Active = true;
             ActivationId = null;
@@ -129,8 +126,8 @@ namespace Auth.Domain.Data.Entities
         /// <returns></returns>
         public User Deactivate()
         {
-            ThrowIfUserDeleted();
-            ThrowIfInactive();
+            CheckRule(new UserCannotBeInDeletedState(this));
+            CheckRule(new UserCannotBeInInactiveState(this));
 
             Active = false;
             ActivationId = Guid.NewGuid();
@@ -145,8 +142,8 @@ namespace Auth.Domain.Data.Entities
         /// <returns></returns>
         public User ResetPassword()
         {
-            ThrowIfUserDeleted();
-            ThrowIfInactive();
+            CheckRule(new UserCannotBeInDeletedState(this));
+            CheckRule(new UserCannotBeInInactiveState(this));
 
             Password = Password.Randomize();
             PasswordResetToken = Guid.NewGuid();
@@ -161,9 +158,9 @@ namespace Auth.Domain.Data.Entities
         /// <returns></returns>
         public User SetPassword(Password password, Guid resetToken)
         {
-            ThrowIfUserDeleted();
-            ThrowIfInactive();
-            ThrowIfPasswordResetTokenIsInvalid(resetToken);
+            CheckRule(new UserCannotBeInDeletedState(this));
+            CheckRule(new UserCannotBeInInactiveState(this));
+            CheckRule(new PasswordResetTokenHasToBeValid(resetToken, this));
 
             Password = password;
             PasswordResetToken = null;
@@ -178,8 +175,8 @@ namespace Auth.Domain.Data.Entities
         /// <returns></returns>
         public User ChangePhoneNumber(PhoneNumber phoneNumber)
         {
-            ThrowIfUserDeleted();
-            ThrowIfInactive();
+            CheckRule(new UserCannotBeInDeletedState(this));
+            CheckRule(new UserCannotBeInInactiveState(this));
 
             PhoneNumber = phoneNumber;
 
@@ -190,46 +187,6 @@ namespace Auth.Domain.Data.Entities
         {
             ModifiedDate = Clock.Now;
             return this;
-        }
-
-        private void ThrowIfUserDeleted()
-        {
-            if (IsDeleted)
-            {
-                throw new UserDeletedException();
-            }
-        }
-
-        private void ThrowIfActive()
-        {
-            if(Active)
-            {
-                throw new UserActiveException();
-            }
-        }
-
-        private void ThrowIfInactive()
-        {
-            if(Inactive)
-            {
-                throw new UserInactiveException();
-            }
-        }
-
-        private void ThrowIfActivationIdInvalid(Guid id)
-        {
-            if(!ActivationId.Equals(id))
-            {
-                throw new InvalidActivationIdException();
-            }
-        }
-
-        private void ThrowIfPasswordResetTokenIsInvalid(Guid resetToken)
-        {
-            if(PasswordResetToken == null || resetToken != PasswordResetToken)
-            {
-                throw new InvalidPasswordResetTokenException();
-            }
         }
     }
 }

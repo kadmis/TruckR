@@ -1,5 +1,4 @@
 ﻿using System;
-using Transport.Domain.Dispatchers;
 using Transport.Domain.Documents;
 
 namespace Transport.Domain.Assignments
@@ -10,7 +9,7 @@ namespace Transport.Domain.Assignments
         private string _description;
         private DateTime _deadline;
 
-        private Dispatcher _dispatcher;
+        private Guid _dispatcherId;
 
         private Document _transportDocument;
 
@@ -26,9 +25,9 @@ namespace Transport.Domain.Assignments
             return this;
         }
 
-        public IAssignmentBuilder AddDispatcher(Dispatcher dispatcher)
+        public IAssignmentBuilder AddDispatcher(Guid dispatcherId)
         {
-            _dispatcher = dispatcher;
+            _dispatcherId = dispatcherId;
 
             return this;
         }
@@ -58,7 +57,7 @@ namespace Transport.Domain.Assignments
         {
             return Assignment.Create(
                 _title, _description,
-                _transportDocument, _dispatcher,
+                _transportDocument, _dispatcherId,
                 _deadline,
                 _start,
                 _destination);

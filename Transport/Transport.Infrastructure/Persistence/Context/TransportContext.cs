@@ -1,27 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BuildingBlocks.EventBus;
+using BuildingBlocks.EventBus.EventualConsistency.Database;
+using BuildingBlocks.EventBus.EventualConsistency.Database.EFCore;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Transport.Domain.Assignments;
-using Transport.Domain.Dispatchers;
-using Transport.Domain.Documents;
-using Transport.Domain.DriverGroups;
-using Transport.Domain.Drivers;
+using Transport.Domain.Groups;
 
 namespace Transport.Infrastructure.Persistence.Context
 {
-    public class TransportContext : DbContext
+    public class TransportContext : DbContext, IEventContext
     {
-        public DbSet<Assignment> Assignments { get; }
-        public DbSet<Dispatcher> Dispatchers { get; }
-        public DbSet<Document> Documents { get; }
-        //public DbSet<DriversGroup> DriversGroups { get; }
-        public DbSet<Driver> Drivers { get; }
+        public DbSet<Assignment> Assignments { get; set; }
+        public DbSet<TransportGroup> TransportGroups { get; set; }
+        public DbSet<EventEntity> Events { get; set; }
 
         public TransportContext(DbContextOptions options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(EventBusAssembly.Assembly);
         }
     }
 }

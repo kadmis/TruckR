@@ -18,8 +18,9 @@ namespace BuildingBlocks.Application.Identity
             var id = _context.HttpContext.GetId();
             var name = _context.HttpContext.GetName();
             var role = _context.HttpContext.GetRole();
+            var authId = _context.HttpContext.GetAuthenticationId();
 
-            return Identity.CreateIdentity(id.Value, name, role);
+            return Identity.CreateIdentity(id.Value, name, role, authId.Value);
         }
     }
 
@@ -45,6 +46,14 @@ namespace BuildingBlocks.Application.Identity
         public static string GetRole(this HttpContext context)
         {
             return context.User?.FindFirst(ClaimTypes.Role)?.Value;
+        }
+
+        public static Guid? GetAuthenticationId(this HttpContext context)
+        {
+            if (Guid.TryParse(context.User?.FindFirst(ClaimTypes.Sid)?.Value, out Guid id))
+                return id;
+            else
+                return null;
         }
     }
 }

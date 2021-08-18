@@ -12,14 +12,15 @@ namespace Auth.Infrastructure.Persistence
     {
         private readonly AuthContext _context;
         private IUserRepository _userRepository;
+        private IUserAuthenticationRepository _userAuthenticationRepository;
 
         public UnitOfWork(AuthContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        //lazy initialization: returns existing instance or creates and assigns new
         public IUserRepository UserRepository => _userRepository ??= new UserRepository(_context);
+        public IUserAuthenticationRepository UserAuthenticationRepository => _userAuthenticationRepository ??= new UserAuthenticationRepository(_context);
 
         public Task<int> Save(CancellationToken cancellationToken = default)
         {

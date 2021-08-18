@@ -1,12 +1,13 @@
 ﻿using BuildingBlocks.Domain;
 using System;
-using Transport.Domain.Dispatchers;
-using Transport.Domain.Drivers;
 using Transport.Domain.Documents;
+using Transport.Domain.Assignments.Events;
+using Transport.Domain.Groups;
+using Transport.Domain.Assignments.Rules;
 
 namespace Transport.Domain.Assignments
 {
-    public class Assignment : IEntity<Guid>, IAggregateRoot
+    public class Assignment : Entity, IAggregateRoot
     {
         //Immutables
         public Guid Id { get; }
@@ -46,7 +47,7 @@ namespace Transport.Domain.Assignments
             string title, 
             string description, 
             Document transportDocument, 
-            Dispatcher dispatcher, 
+            Guid dispatcherId, 
             DateTime deadline,
             Address start,
             Address destination)
@@ -55,7 +56,7 @@ namespace Transport.Domain.Assignments
             _title = title;
             _description = description;
             _transportDocument = transportDocument;
-            _dispatcherId = dispatcher.Id;
+            _dispatcherId = dispatcherId;
             _deadline = deadline;
             _start = start;
             _destination = destination;
@@ -75,19 +76,23 @@ namespace Transport.Domain.Assignments
             string title, 
             string description, 
             Document transportDocument, 
-            Dispatcher dispatcher, 
+            Guid dispatcherId, 
             DateTime deadline,
             Address start,
             Address destination)
         {
-            return new Assignment(
+            var assignment = new Assignment(
                 title,
                 description,
                 transportDocument,
-                dispatcher,
+                dispatcherId,
                 deadline,
                 start,
                 destination);
+
+            assignment.AddDomainEvent(new AssignmentCreatedDomainEvent(assignment.Id, assignment._dispatcherId));
+
+            return assignment;
         }
 
         /// <summary>
@@ -97,14 +102,7 @@ namespace Transport.Domain.Assignments
         /// <returns></returns>
         public Assignment AssignDriver(Driver driver)
         {
-            if (driver.Id.Equals(_dispatcherId))
-            {
-                throw new ArgumentException("Dispatcher cannot be the driver.");
-            }
-            if(Assigned)
-            {
-                throw new InvalidOperationException("Assignment is already taken.");
-            }
+            CheckRule(new AssignmentAlreadyAssignedRule(this));
 
             _driverId = driver.Id;
             _assignedOn = Clock.Now;
@@ -118,18 +116,9 @@ namespace Transport.Domain.Assignments
         /// <returns></returns>
         public Assignment Complete(Driver driver)
         {
-            if(!Assigned)
-            {
-                throw new InvalidOperationException("Assignment not yet assigned.");
-            }
-            if(!driver.Id.Equals(_driverId))
-            {
-                throw new ArgumentException("Invalid driver.");
-            }
-            if(Completed)
-            {
-                throw new InvalidOperationException("Assignment is already completed.");
-            }
+            CheckRule(new AssignmentNotYetAssignedRule(this));
+            CheckRule(new ValidAssignedDriverRule(_driverId.Value, driver.Id));
+            CheckRule(new AssignmentAlreadyCompletedRule(this));
 
             _completedOn = Clock.Now;
             return this;

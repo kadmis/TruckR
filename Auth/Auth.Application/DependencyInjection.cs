@@ -1,4 +1,5 @@
 ﻿using Auth.Application.JWT;
+using Auth.Domain.Services.TokenGeneration;
 using BuildingBlocks.Application;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

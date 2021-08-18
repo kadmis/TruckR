@@ -1,12 +1,7 @@
-﻿using BuildingBlocks.Application.Identity;
+﻿using BuildingBlocks.Application;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Location.Application
 {
@@ -15,7 +10,7 @@ namespace Location.Application
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddMediator();
-            services.AddScoped<IIdentityAccessor, IdentityAccessor>();
+            services.AddIdentityAccessor();
         }
 
         private static void AddMediator(this IServiceCollection services)

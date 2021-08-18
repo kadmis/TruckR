@@ -1,4 +1,4 @@
-﻿using Auth.Domain.Data.ValueObjects;
+﻿using BuildingBlocks.EventBus.EventualConsistency;
 
 namespace Auth.IntegrationEvents
 {
@@ -9,7 +9,10 @@ namespace Auth.IntegrationEvents
             Email = email;
             Username = username;
         }
+        public UsernameReminderRequestedEvent()
+        {
 
+        }
         public string Email { get; }
         public string Username { get; }
     }

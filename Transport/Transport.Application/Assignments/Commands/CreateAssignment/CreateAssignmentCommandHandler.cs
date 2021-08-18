@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 using Transport.Application.Assignments.Queries.DocumentsThisMonth;
 using Transport.Application.Files;
 using Transport.Domain.Assignments;
-using Transport.Domain.Dispatchers;
-using Transport.Domain.Documents;
 
 namespace Transport.Application.Assignments.Commands.CreateAssignment
 {
     public class CreateAssignmentCommandHandler : ICommandHandler<CreateAssignmentCommand, CreateAssignmentResult>
     {
         private readonly IIdentityAccessor _identityAccessor;
-        private readonly IDispatchersRepository _dispatchersRepository;
         private readonly IAssignmentsRepository _assignmentsRepository;
         private readonly IAssignmentBuilder _assignmentBuilder;
         private readonly IFilesStorage _filesStorage;
@@ -23,14 +20,12 @@ namespace Transport.Application.Assignments.Commands.CreateAssignment
 
         public CreateAssignmentCommandHandler(
             IIdentityAccessor identityAccessor,
-            IDispatchersRepository dispatchersRepository,
             IAssignmentsRepository assignmentsRepository,
             IAssignmentBuilder assignmentBuilder,
             IFilesStorage filesStorage, 
             IMediator mediator)
         {
             _identityAccessor = identityAccessor;
-            _dispatchersRepository = dispatchersRepository;
             _assignmentsRepository = assignmentsRepository;
             _assignmentBuilder = assignmentBuilder;
             _filesStorage = filesStorage;
@@ -43,7 +38,7 @@ namespace Transport.Application.Assignments.Commands.CreateAssignment
             {
                 var user = _identityAccessor.UserIdentity();
 
-                var dispatcher = await _dispatchersRepository.FindById(user.UserId, cancellationToken);
+                var dispatcher = user.UserId;
 
                 var documentsThisMonthResult = await _mediator.Send(new DocumentsThisMonthQuery(), cancellationToken);
 
