@@ -1,5 +1,4 @@
-﻿using Auth.Application.Models.Results;
-using BuildingBlocks.Application.Commands;
+﻿using BuildingBlocks.Application.Commands;
 
 namespace Auth.Application.Commands.Authenticate
 {

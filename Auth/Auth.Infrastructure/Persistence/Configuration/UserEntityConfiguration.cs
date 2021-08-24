@@ -51,10 +51,13 @@ namespace Auth.Infrastructure.Persistence.Configuration
                 .Property(x => x.Value)
                 .HasColumnName("Role");
             builder
-                .OwnsOne(x => x.Username)
-                .Property(x => x.Value)
+                .Property(x => x.Firstname)
                 .HasConversion(new EncryptedConverter(_encryptor))
-                .HasColumnName("Username");
+                .HasColumnName("Firstname");
+            builder
+                .Property(x => x.Lastname)
+                .HasConversion(new EncryptedConverter(_encryptor))
+                .HasColumnName("Lastname");
         }
     }
 }

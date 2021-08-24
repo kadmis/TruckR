@@ -1,11 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Gateway.API
 {
@@ -18,9 +13,18 @@ namespace Gateway.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .ConfigureAppConfiguration((context, config)=> 
+            {
+                config
+                    .SetBasePath(context.HostingEnvironment.ContentRootPath)
+                    .AddJsonFile("appsettings.json")
+                    .AddJsonFile("ocelot.json")
+                    .AddEnvironmentVariables();
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder
+                    .UseStartup<Startup>();
+            });
     }
 }

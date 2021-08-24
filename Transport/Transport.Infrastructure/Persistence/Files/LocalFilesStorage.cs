@@ -42,10 +42,9 @@ namespace Transport.Infrastructure.Persistence.Files
 
         public async Task<bool> Save(string path, string name, long fileLength, string contentType, Stream fileStream, CancellationToken cancellationToken = default)
         {
-            var filePath = FileFullPath(path, name);
-            Directory.CreateDirectory(filePath);
+            Directory.CreateDirectory(FileDirectoryPath(path));
 
-            using var writer = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            using var writer = new FileStream(FileFullPath(path, name), FileMode.CreateNew, FileAccess.Write);
 
             byte[] buffer = new byte[512 * 1024];
             int bytesRead;
@@ -60,7 +59,8 @@ namespace Transport.Infrastructure.Persistence.Files
 
         private string FileFullPath(string path, string name)
         {
-            return Path.Combine(FileDirectoryPath(path), name);
+            var filePath = FileDirectoryPath(path);
+            return Path.Combine(filePath, name);
         }
         private string FileDirectoryPath(string path)
         {

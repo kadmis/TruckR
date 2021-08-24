@@ -1,4 +1,4 @@
-﻿using Auth.Application.Models.Results;
+﻿using Auth.Application.Commands.Authenticate;
 using Auth.Domain.Data.Entities;
 using Auth.Domain.Persistence;
 using Auth.Domain.Services.TokenGeneration;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Commands.RefreshToken
 {
-    public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, AuthenticationResult>
+    public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, RefreshTokenResult>
     {
         private readonly IIdentityAccessor _identity;
         private readonly IUnitOfWork _uow;
@@ -26,7 +26,7 @@ namespace Auth.Application.Commands.RefreshToken
             _tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
         }
 
-        public async Task<AuthenticationResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<RefreshTokenResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -46,11 +46,11 @@ namespace Auth.Application.Commands.RefreshToken
 
                 await _uow.Save(cancellationToken);
 
-                return AuthenticationResult.Success(token.Value, newAuthentication.RefreshToken.Value);
+                return RefreshTokenResult.Success(token.Value, newAuthentication.RefreshToken.Value);
             }
             catch (Exception ex)
             {
-                return AuthenticationResult.Fail(ex.Message);
+                return RefreshTokenResult.Fail(ex.Message);
             }
         }
     }

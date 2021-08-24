@@ -1,5 +1,4 @@
-﻿using Auth.Application.Models.Results;
-using Auth.Domain.Services.Registration;
+﻿using Auth.Domain.Services.Registration;
 using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Handlers;
 using BuildingBlocks.EventBus.Externals.Events.Publishing;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Commands.RegisterDispatcher
 {
-    public class RegisterDispatcherCommandHandler : ICommandHandler<RegisterDispatcherCommand, RegistrationResult>
+    public class RegisterDispatcherCommandHandler : ICommandHandler<RegisterDispatcherCommand, RegisterDispatcherResult>
     {
         private readonly IUserRegistrationService _registrationService;
         private readonly IEventPublisher<UserRegisteredEvent> _eventPublisher;
@@ -20,7 +19,7 @@ namespace Auth.Application.Commands.RegisterDispatcher
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
-        public async Task<RegistrationResult> Handle(RegisterDispatcherCommand request, CancellationToken cancellationToken)
+        public async Task<RegisterDispatcherResult> Handle(RegisterDispatcherCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -41,11 +40,11 @@ namespace Auth.Application.Commands.RegisterDispatcher
                     result.Lastname,
                     result.Role.Value), cancellationToken);
 
-                return RegistrationResult.Success(result.Id);
+                return RegisterDispatcherResult.Success(result.Id);
             }
             catch (Exception ex)
             {
-                return RegistrationResult.Fail(ex.Message);
+                return RegisterDispatcherResult.Fail(ex.Message);
             }
         }
     }

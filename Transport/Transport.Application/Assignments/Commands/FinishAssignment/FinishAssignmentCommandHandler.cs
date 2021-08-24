@@ -28,7 +28,7 @@ namespace Transport.Application.Assignments.Commands.FinishAssignment
 
                 var assignment = await _assignmentsRepository.Find(request.AssignmentId, cancellationToken);
 
-                //assignment.Complete(driver);
+                assignment.Complete(user.UserId);
 
                 return FinishAssignmentResult.Success();
             }

@@ -3,9 +3,6 @@ using BuildingBlocks.Application.Handlers;
 using BuildingBlocks.Domain;
 using Dapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,10 +25,10 @@ namespace Transport.Application.Assignments.Queries.DocumentsThisMonth
 
             var query = "SELECT " +
                 "COUNT(1) " +
-                "FROM dbo.Documents AS D" +
-                "INNER JOIN dbo.Assignments A" +
-                "ON A.DocumentId = D.Id " +
-                "WHERE MONTH(A.CreatedDate) = @Month AND YEAR(A.CreatedDate) = @Year";
+                "FROM dbo.Documents AS D " +
+                "INNER JOIN dbo.Assignments A " +
+                "ON A.Id = D.AssignmentId " +
+                "WHERE MONTH(A.CreatedOn) = @Month AND YEAR(A.CreatedOn) = @Year";
 
             try
             {

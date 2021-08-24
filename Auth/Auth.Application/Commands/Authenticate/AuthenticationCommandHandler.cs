@@ -1,5 +1,4 @@
-﻿using Auth.Application.Models.Results;
-using Auth.Domain.Data.Entities;
+﻿using Auth.Domain.Data.Entities;
 using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Persistence;
 using Auth.Domain.Services.TokenGeneration;

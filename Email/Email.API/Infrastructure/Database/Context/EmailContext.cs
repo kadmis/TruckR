@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.EventBus;
-using BuildingBlocks.EventBus.EventualConsistency.Database;
-using BuildingBlocks.EventBus.EventualConsistency.Database.EFCore;
+using BuildingBlocks.EventBus.Externals.EventualConsistency.Database;
+using BuildingBlocks.EventBus.Externals.EventualConsistency.Database.EFCore;
 using Email.API.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;

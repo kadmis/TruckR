@@ -1,5 +1,4 @@
-﻿using Auth.Application.Models.Results;
-using Auth.Domain.Data.ValueObjects;
+﻿using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence;
 using Auth.IntegrationEvents;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Commands.Delete
 {
-    public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, UserDeletionResult>
+    public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand, DeleteUserResult>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventPublisher<UserDeletedEvent> _publisher;
@@ -22,7 +21,7 @@ namespace Auth.Application.Commands.Delete
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         }
 
-        public async Task<UserDeletionResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+        public async Task<DeleteUserResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -41,11 +40,11 @@ namespace Auth.Application.Commands.Delete
                 await _unitOfWork.Save(cancellationToken);
                 await _publisher.Publish(new UserDeletedEvent(userId, emailCopy.Value), cancellationToken);
 
-                return UserDeletionResult.Success(userId);
+                return DeleteUserResult.Success();
             }
             catch (Exception ex)
             {
-                return UserDeletionResult.Fail(ex.Message);
+                return DeleteUserResult.Fail(ex.Message);
             }
         }
     }

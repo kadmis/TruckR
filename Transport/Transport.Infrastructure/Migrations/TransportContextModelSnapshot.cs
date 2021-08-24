@@ -19,7 +19,7 @@ namespace Transport.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BuildingBlocks.EventBus.EventualConsistency.Database.EventEntity", b =>
+            modelBuilder.Entity("BuildingBlocks.EventBus.Externals.EventualConsistency.Database.EventEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -202,27 +202,25 @@ namespace Transport.Infrastructure.Migrations
 
             modelBuilder.Entity("Transport.Domain.Groups.TransportGroup", b =>
                 {
-                    b.OwnsMany("Transport.Domain.Groups.Driver", "_drivers", b1 =>
+                    b.OwnsMany("Transport.Domain.Groups.Driver", "Drivers", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<Guid>("_groupId")
-                                .HasColumnType("uniqueidentifier")
-                                .HasColumnName("GroupId");
+                            b1.Property<Guid>("GroupId")
+                                .HasColumnType("uniqueidentifier");
 
-                            b1.HasKey("Id");
+                            b1.HasKey("Id", "GroupId");
 
-                            b1.HasIndex("_groupId");
+                            b1.HasIndex("GroupId");
 
                             b1.ToTable("Drivers");
 
                             b1.WithOwner()
-                                .HasForeignKey("_groupId");
+                                .HasForeignKey("GroupId");
                         });
 
-                    b.Navigation("_drivers");
+                    b.Navigation("Drivers");
                 });
 #pragma warning restore 612, 618
         }

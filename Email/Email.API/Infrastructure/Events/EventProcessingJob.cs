@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.EventBus.EventualConsistency.Processing;
+﻿using BuildingBlocks.EventBus.Externals.EventualConsistency.Processing;
 using Quartz;
 using System.Threading.Tasks;
 

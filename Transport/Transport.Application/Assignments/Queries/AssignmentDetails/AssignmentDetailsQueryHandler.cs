@@ -2,9 +2,6 @@
 using BuildingBlocks.Application.Handlers;
 using Dapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,10 +32,8 @@ namespace Transport.Application.Assignments.Queries.AssignmentDetails
                 "A.Deadline, " + 
                 "A.CreatedOn, " +
                 "A.CompletedOn, " +
-                "A.AssignedOn, " +
-                "A.Dispatcher, " +
-                "A.Driver " +
-                "FROM dbo.v_AssignmentDetails AS A" +
+                "A.AssignedOn " +
+                "FROM dbo.Assignments AS A" +
                 "WHERE A.Id = @AssignmentId";
 
             try

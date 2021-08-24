@@ -1,5 +1,4 @@
-﻿using Auth.Application.Models.Results;
-using Auth.Domain.Data.Entities;
+﻿using Auth.Domain.Data.Entities;
 using Auth.Domain.Data.ValueObjects;
 using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Commands.Activate
 {
-    public class ActivateUserCommandHandler : ICommandHandler<ActivateUserCommand, UserActivationResult>
+    public class ActivateUserCommandHandler : ICommandHandler<ActivateUserCommand, ActivateUserResult>
     {
         private readonly IUnitOfWork _uow;
         private readonly IEventPublisher<DriverActivatedEvent> _driverPublisher;
@@ -28,7 +27,7 @@ namespace Auth.Application.Commands.Activate
             _dispatcherPublisher = dispatcherPublisher ?? throw new ArgumentNullException(nameof(dispatcherPublisher));
         }
 
-        public async Task<UserActivationResult> Handle(ActivateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ActivateUserResult> Handle(ActivateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -45,11 +44,11 @@ namespace Auth.Application.Commands.Activate
 
                 await PublishActivatedEvent(user);
 
-                return UserActivationResult.Success();
+                return ActivateUserResult.Success();
             }
             catch (Exception ex)
             {
-                return UserActivationResult.Fail(ex.Message);
+                return ActivateUserResult.Fail(ex.Message);
             }
         }
 

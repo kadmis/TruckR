@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.EventBus.EventualConsistency;
+﻿using BuildingBlocks.EventBus.Externals.EventualConsistency;
 using System;
 
 namespace Auth.IntegrationEvents

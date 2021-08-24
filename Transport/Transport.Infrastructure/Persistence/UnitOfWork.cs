@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using TaskManagement.Infrastructure.Configuration.Processing;
 using Transport.Domain.Assignments;
 using Transport.Domain.Groups;
 using Transport.Infrastructure.Persistence.Context;
@@ -12,18 +13,21 @@ namespace Transport.Infrastructure.Persistence
         private IAssignmentsRepository _assignmentsRepository;
         private ITransportGroupsRepository _transportGroupsRepository;
         private readonly TransportContext _context;
+        private readonly IDomainEventsDispatcher _dispatcher;
 
-        public UnitOfWork(TransportContext context)
+        public UnitOfWork(TransportContext context, IDomainEventsDispatcher dispatcher)
         {
             _context = context;
+            _dispatcher = dispatcher;
         }
 
         public IAssignmentsRepository AssignmentsRepository => _assignmentsRepository ??= new AssignmentsRepository(_context);
         public ITransportGroupsRepository TransportGroupsRepository => _transportGroupsRepository ??= new TransportGroupsRepository(_context);
 
-        public Task<int> Save(CancellationToken cancellationToken = default)
+        public async Task<int> Save(CancellationToken cancellationToken = default)
         {
-            return _context.SaveChangesAsync(cancellationToken);
+            await _dispatcher.DispatchEventsAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Commands;
-using BuildingBlocks.EventBus.EventualConsistency.Processing.EventMapper;
 using BuildingBlocks.EventBus.Externals.Events;
+using BuildingBlocks.EventBus.Externals.EventualConsistency.Processing.EventMapper;
 using Transport.Infrastructure.InternalCommands.CreateGroup;
 
 namespace Transport.Infrastructure.Events.Mapping

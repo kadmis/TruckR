@@ -1,4 +1,4 @@
-﻿using Auth.Application.Models.Results;
+﻿using Auth.Application.Commands.RegisterDispatcher;
 using Auth.Domain.Services.Registration;
 using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Handlers;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Commands.RegisterDriver
 {
-    public class RegisterDriverCommandHandler : ICommandHandler<RegisterDriverCommand, RegistrationResult>
+    public class RegisterDriverCommandHandler : ICommandHandler<RegisterDriverCommand, RegisterDriverResult>
     {
         private readonly IUserRegistrationService _registrationService;
         private readonly IEventPublisher<UserRegisteredEvent> _eventPublisher;
@@ -20,7 +20,7 @@ namespace Auth.Application.Commands.RegisterDriver
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
-        public async Task<RegistrationResult> Handle(RegisterDriverCommand request, CancellationToken cancellationToken)
+        public async Task<RegisterDriverResult> Handle(RegisterDriverCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -41,11 +41,11 @@ namespace Auth.Application.Commands.RegisterDriver
                     result.Lastname,
                     result.Role.Value), cancellationToken);
 
-                return RegistrationResult.Success(result.Id);
+                return RegisterDriverResult.Success(result.Id);
             }
             catch (Exception ex)
             {
-                return RegistrationResult.Fail(ex.Message);
+                return RegisterDriverResult.Fail(ex.Message);
             }
         }
     }

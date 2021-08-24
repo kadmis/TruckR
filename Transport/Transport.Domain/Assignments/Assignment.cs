@@ -100,11 +100,11 @@ namespace Transport.Domain.Assignments
         /// </summary>
         /// <param name="driver">Given driver.</param>
         /// <returns></returns>
-        public Assignment AssignDriver(Driver driver)
+        public Assignment AssignDriver(Guid driverId)
         {
             CheckRule(new AssignmentAlreadyAssignedRule(this));
 
-            _driverId = driver.Id;
+            _driverId = driverId;
             _assignedOn = Clock.Now;
             return this;
         }
@@ -114,10 +114,10 @@ namespace Transport.Domain.Assignments
         /// </summary>
         /// <param name="driver">Given driver.</param>
         /// <returns></returns>
-        public Assignment Complete(Driver driver)
+        public Assignment Complete(Guid driverId)
         {
             CheckRule(new AssignmentNotYetAssignedRule(this));
-            CheckRule(new ValidAssignedDriverRule(_driverId.Value, driver.Id));
+            CheckRule(new ValidAssignedDriverRule(_driverId.Value, driverId));
             CheckRule(new AssignmentAlreadyCompletedRule(this));
 
             _completedOn = Clock.Now;

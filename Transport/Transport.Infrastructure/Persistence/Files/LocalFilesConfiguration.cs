@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace Transport.Infrastructure.Persistence.Files
 {
     public class LocalFilesConfiguration
     {
-        private readonly string _filesPath = "files";
+        private readonly string _filesPath = "application-files";
         private readonly string _defaultContentType = "application/octet-stream";
 
         private readonly string _basePath;

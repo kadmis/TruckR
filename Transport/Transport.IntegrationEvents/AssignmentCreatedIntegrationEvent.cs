@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.EventBus.EventualConsistency;
-using BuildingBlocks.EventBus.Externals.Events;
+﻿using BuildingBlocks.EventBus.Externals.EventualConsistency;
 using System;
 using Transport.Domain.Assignments.Events;
 
@@ -22,6 +21,5 @@ namespace Transport.IntegrationEvents
         }
         public Guid AssignmentId { get; private set; }
         public Guid CreatorId { get; private set; }
-        public DateTime OccuredOn { get; private set; }
     }
 }

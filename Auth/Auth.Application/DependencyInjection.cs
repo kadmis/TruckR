@@ -15,6 +15,7 @@ namespace Auth.Application
             services.AddTokenGenerator();
             services.AddIdentityAccessor();
         }
+
         private static void AddMediator(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());

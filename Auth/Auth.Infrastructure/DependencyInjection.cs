@@ -18,6 +18,7 @@ using Auth.Infrastructure.Security.Passwords;
 using Auth.IntegrationEvents;
 using BuildingBlocks.EventBus.Externals;
 using BuildingBlocks.EventBus.Externals.Events.Publishing;
+using BuildingBlocks.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ namespace Auth.Infrastructure
             services.AddSpecifications();
             services.AddEventBus();
             services.AddApplicationLayer();
+            services.AddSqlConnectionFactory(configuration.GetConnectionString("DEV"));
         }
 
         private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)

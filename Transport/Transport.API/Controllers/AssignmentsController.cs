@@ -32,7 +32,7 @@ namespace Transport.API.Controllers
 
         [Authorize(Roles = "Dispatcher")]
         [HttpPost]
-        public async Task<JsonResult> CreateAssignment([FromBody] CreateAssignmentCommand command, 
+        public async Task<JsonResult> CreateAssignment([FromForm] CreateAssignmentCommand command, 
             CancellationToken cancellationToken = default)
         {
             return new JsonResult(await _mediator.Send(command, cancellationToken));

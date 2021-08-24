@@ -1,8 +1,8 @@
 ﻿using Auth.IntegrationEvents;
-using BuildingBlocks.EventBus.EventualConsistency;
-using BuildingBlocks.EventBus.EventualConsistency.Processing.EventMapper;
 using BuildingBlocks.EventBus.Externals;
 using BuildingBlocks.EventBus.Externals.Events.Handling;
+using BuildingBlocks.EventBus.Externals.EventualConsistency;
+using BuildingBlocks.EventBus.Externals.EventualConsistency.Processing.EventMapper;
 using BuildingBlocks.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using System.IO;
 using System.Reflection;
+using TaskManagement.Infrastructure.Configuration.Processing;
 using Transport.Application.DependencyInjection;
 using Transport.Application.Files;
 using Transport.Domain.Assignments;
@@ -22,6 +23,7 @@ using Transport.Infrastructure.Persistence;
 using Transport.Infrastructure.Persistence.Context;
 using Transport.Infrastructure.Persistence.Files;
 using Transport.Infrastructure.Persistence.Repositories;
+using Transport.Infrastructure.Processing;
 
 namespace Transport.Infrastructure.DependencyInjection
 {
@@ -30,6 +32,7 @@ namespace Transport.Infrastructure.DependencyInjection
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddApplication();
+            services.AddProcessing();
             services.AddPersistence(configuration);
             services.AddCreation();
             services.AddSqlConnectionFactory(configuration.GetConnectionString("DEV"));
@@ -54,13 +57,19 @@ namespace Transport.Infrastructure.DependencyInjection
         {
             var path = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "Persistence/Files");
+                "");
 
             var filesConfiguration = new LocalFilesConfiguration(path);
 
             services.AddSingleton(filesConfiguration);
 
             services.AddTransient<IFilesStorage, LocalFilesStorage>();
+        }
+
+        private static void AddProcessing(this IServiceCollection services)
+        {
+            services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkPipelineBehavior<,>));
         }
 
         private static void AddEvents(this IServiceCollection services)

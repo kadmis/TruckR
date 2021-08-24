@@ -1,9 +1,9 @@
-﻿using Auth.Application.Models.Results;
+﻿using Auth.Application.Commands.RegisterDispatcher;
 using BuildingBlocks.Application.Commands;
 
 namespace Auth.Application.Commands.RegisterDriver
 {
-    public class RegisterDriverCommand : ICommand<RegistrationResult>
+    public class RegisterDriverCommand : ICommand<RegisterDriverResult>
     {
         public string Username { get; set; }
         public string Firstname { get; set; }

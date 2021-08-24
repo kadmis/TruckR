@@ -31,7 +31,7 @@ namespace Transport.Application.Assignments.Commands.TakeAssignment
 
                 var assignment = await _assignmentsRepository.Find(request.AssignmentId, cancellationToken);
 
-                //assignment.AssignDriver(driver);
+                assignment.AssignDriver(user.UserId);
 
                 return TakeAssignmentResult.Success();
             }

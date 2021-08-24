@@ -3,6 +3,7 @@ using Auth.Application.Commands.RemindPassword;
 using Auth.Application.Commands.RemindUsername;
 using Auth.Application.Commands.ResetPassword;
 using Auth.Application.Commands.SetPassword;
+using Auth.Application.Queries.UserDetails;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,13 @@ namespace Auth.API.Controllers
         public async Task<IActionResult> RemindUsername([FromQuery] string email, CancellationToken cancellationToken = default)
         {
             return new JsonResult(await Mediator.Send(new RemindUsernameCommand(email), cancellationToken));
+        }
+
+        [Authorize]
+        [HttpGet("details")]
+        public async Task<IActionResult> GetUserDetails([FromQuery] UserDetailsQuery query, CancellationToken cancellationToken = default)
+        {
+            return new JsonResult(await Mediator.Send(query, cancellationToken));
         }
     }
 }

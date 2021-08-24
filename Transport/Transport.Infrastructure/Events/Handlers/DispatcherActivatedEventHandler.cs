@@ -1,6 +1,6 @@
 ﻿using Auth.IntegrationEvents;
-using BuildingBlocks.EventBus.EventualConsistency.Processing.EventProcessor;
 using BuildingBlocks.EventBus.Externals.Events.Handling;
+using BuildingBlocks.EventBus.Externals.EventualConsistency.Processing.EventProcessor;
 using System.Threading;
 using System.Threading.Tasks;
 

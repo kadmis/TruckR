@@ -8,7 +8,7 @@ namespace Auth.Domain.Data.ValueObjects
     public class Username : ValueObject
     {
         private const string _validFormat = @"^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
-        private const int _minLength = 8;
+        private const int _minLength = 6;
         private const int _maxLength = 25;
         public string Value { get; }
 

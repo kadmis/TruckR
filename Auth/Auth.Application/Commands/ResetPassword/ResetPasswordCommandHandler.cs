@@ -1,5 +1,4 @@
-﻿using Auth.Application.Models.Results;
-using Auth.Domain.Exceptions.UserExceptions;
+﻿using Auth.Domain.Exceptions.UserExceptions;
 using Auth.Domain.Persistence;
 using Auth.IntegrationEvents;
 using BuildingBlocks.Application.Handlers;
