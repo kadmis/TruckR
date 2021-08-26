@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace EventMonitor.API
 {
+    // TODO Event monitoring jeœli zd¹¿ysz
     public class Program
     {
         public static void Main(string[] args)

@@ -26,10 +26,11 @@ namespace Location.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSignalR();
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
             services.AddJwtAuthentication(Configuration);
-            services.AddSignalR();
             services.AddInfrastructure(Configuration);
+            services.AddCors("https://localhost:4200", "http://localhost:4200");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,14 +43,7 @@ namespace Location.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"{_apiTitle} {_apiVersion}"));
             }
 
-            app.UseCors(builder =>
-            {
-                builder
-                    .WithOrigins("http://localhost:4200")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
+            app.UseCors();
 
             app.UseInfrastructure();
 

@@ -11,14 +11,15 @@ namespace Location.Application.Commands.SaveLocation
     {
         private readonly ITemporaryStorageService<LocationModel> _storage;
 
-        public SaveLocationCommandHandler(ITemporaryStorageService<LocationModel> storage)
+        public SaveLocationCommandHandler(
+            ITemporaryStorageService<LocationModel> storage)
         {
             _storage = storage;
         }
 
         public async Task<Unit> Handle(SaveLocationCommand request, CancellationToken cancellationToken)
         {
-            await _storage.AddAsync(new LocationModel(request.UserId, request.Latitude, request.Longitude));
+            await _storage.AddAsync(new LocationModel(request.UserId, request.Coordinates.Latitude, request.Coordinates.Longitude));
 
             return Unit.Value;
         }

@@ -1,5 +1,6 @@
 ﻿using Location.Application.Commands.SaveLocation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Location.API.Hubs
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class LocationsHub : Hub
     {
         private readonly IMediator _mediator;
@@ -27,6 +28,7 @@ namespace Location.API.Hubs
             await Clients.Others.SendAsync("Disconnected", $"{Context.ConnectionId} left locations.");
         }
 
+        //[Authorize(Roles = "Driver")]
         public async Task ShareLocation(SaveLocationCommand location)
         {
             await Clients.Others.SendAsync("LocationShared", location);

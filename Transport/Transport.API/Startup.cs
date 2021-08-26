@@ -31,6 +31,7 @@ namespace Transport.API
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
             services.AddJwtAuthentication(Configuration);
             services.AddInfrastructure(Configuration);
+            services.AddCors("https://localhost:4200", "http://localhost:4200");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +43,8 @@ namespace Transport.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"{_apiTitle} {_apiVersion}"));
             }
+
+            app.UseCors();
 
             app.UseHttpsRedirection();
 

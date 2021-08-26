@@ -45,7 +45,7 @@ namespace Auth.Application.Commands.Authenticate
 
                 await _unitOfWork.Save(cancellationToken);
 
-                return AuthenticationResult.Success(token.Value, authentication.RefreshToken.Value);
+                return AuthenticationResult.Success(token.Value, authentication.RefreshToken.Value, token.RefreshInterval, user.Role.Value, user.Id);
             }
             catch (Exception ex)
             {

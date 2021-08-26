@@ -39,7 +39,7 @@ namespace Email.API.Infrastructure.InternalCommands.SendActivationEmail
                 request.Email,
                 request.Email,
                 "Welcome to the TruckR system.",
-                $"Activate your account here: https://localhost:44312/api/user/activate/{request.UserId}/{request.ActivationId}"), cancellationToken);
+                $"Activate your account here: http://localhost:4200/#/activate/{request.UserId}/{request.ActivationId}"), cancellationToken);
 
             return Unit.Value;
         }

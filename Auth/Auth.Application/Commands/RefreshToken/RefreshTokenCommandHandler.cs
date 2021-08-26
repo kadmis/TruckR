@@ -1,5 +1,4 @@
-﻿using Auth.Application.Commands.Authenticate;
-using Auth.Domain.Data.Entities;
+﻿using Auth.Domain.Data.Entities;
 using Auth.Domain.Persistence;
 using Auth.Domain.Services.TokenGeneration;
 using BuildingBlocks.Application.Handlers;
@@ -46,7 +45,7 @@ namespace Auth.Application.Commands.RefreshToken
 
                 await _uow.Save(cancellationToken);
 
-                return RefreshTokenResult.Success(token.Value, newAuthentication.RefreshToken.Value);
+                return RefreshTokenResult.Success(token.Value, newAuthentication.RefreshToken.Value, token.RefreshInterval, user.Role.Value, user.Id);
             }
             catch (Exception ex)
             {

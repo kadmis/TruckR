@@ -37,7 +37,7 @@ namespace BuildingBlocks.EventBus.Externals
         public static IApplicationBuilder AddHandler<T>(this IApplicationBuilder app) where T : IEvent
         {
             if (app.ApplicationServices.GetService(typeof(IEventBusClient)) is not IEventBusClient busClient)
-                throw new NullReferenceException();
+                throw new NullReferenceException(nameof(IEventBusClient));
 
             return app.AddHandler<T>(busClient);
         }

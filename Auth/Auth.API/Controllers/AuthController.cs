@@ -5,6 +5,7 @@ using Auth.Application.Commands.RefreshToken;
 using Auth.Application.Commands.RegisterDispatcher;
 using Auth.Application.Commands.RegisterDriver;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auth.API.Controllers

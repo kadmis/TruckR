@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-5 col-md-6 offset-lg-0 offset-md-3">
+      <div class="square square-7" id="square7"></div>
+      <div class="square square-8" id="square8"></div>
+      <div class="card card-register">
+        <div class="card-header">
+          <img alt="Card image" class="card-img" src="assets/img/square1-red.png" />
+
+          <h6 class="card-title">{{title}}</h6>
+        </div>
+        <div class="card-body">
+          <form class="form" [formGroup]="registrationForm">
+            <div class="input-group" [ngClass]="{ 'input-group-focus': focusFirstname === true }">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-single-02"> </i>
+                </div>
+              </div>
+              <input id="firstName" class="form-control" placeholder="Imię" formControlName="firstname" type="text"
+                (focus)="focusFirstname = true" (blur)="focusFirstname = false" />
+            </div>
+
+            <div class="input-group" [ngClass]="{ 'input-group-focus': focusLastname === true }">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-single-02"> </i>
+                </div>
+              </div>
+              <input id="lastname" class="form-control" placeholder="Nazwisko" formControlName="lastname" type="text"
+                (focus)="focusLastname = true" (blur)="focusLastname = false" />
+            </div>
+
+            <div class="input-group" [ngClass]="{ 'input-group-focus': focusEmail === true }">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-email-85"> </i>
+                </div>
+              </div>
+              <input id="email" class="form-control" placeholder="Email" formControlName="email" type="email"
+                (focus)="focusEmail = true" (blur)="focusEmail = false" />
+            </div>
+            <div class="input-group" [ngClass]="{ 'input-group-focus': focusPhone === true }">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-chat-33"> </i>
+                </div>
+              </div>
+              <input id="phone" class="form-control" placeholder="Nr telefonu" formControlName="phone" type="phone"
+                (focus)="focusPhone = true" (blur)="focusPhone = false" />
+            </div>
+            <div class="input-group" [ngClass]="{ 'input-group-focus': focusLogin === true }">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-badge"> </i>
+                </div>
+              </div>
+              <input id="login" class="form-control" placeholder="Login" formControlName="login" type="text"
+                (focus)="focusLogin = true" (blur)="focusLogin = false" />
+            </div>
+            <div class="input-group" [ngClass]="{ 'input-group-focus': focusPassword === true }">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-lock-circle"> </i>
+                </div>
+              </div>
+              <input id="password" class="form-control" placeholder="Hasło" formControlName="password" type="password"
+                (focus)="focusPassword = true" (blur)="focusPassword = false" />
+            </div>
+          </form>
+        </div>
+        <div class="card-footer">
+          <a type="submit" class="btn btn-danger btn-round btn-lg" (click)="confirm()">
+            Zarejestruj się
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="register-bg"></div>
+  <div class="square square-1" id="square1"></div>
+  <div class="square square-2" id="square2"></div>
+  <div class="square square-3" id="square3"></div>
+  <div class="square square-4" id="square4"></div>
+  <div class="square square-5" id="square5"></div>
+  <div class="square square-6" id="square6"></div>
+</div>

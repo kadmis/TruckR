@@ -26,6 +26,7 @@ namespace Auth.API
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
             services.AddJwtAuthentication(Configuration);
             services.AddInfrastructure(Configuration);
+            services.AddCors("https://localhost:4200", "http://localhost:4200");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -36,6 +37,8 @@ namespace Auth.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"{_apiTitle} {_apiVersion}"));
             }
+
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
