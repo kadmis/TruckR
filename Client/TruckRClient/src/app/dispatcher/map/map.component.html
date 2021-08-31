@@ -1,21 +1,38 @@
-<google-map
-  height="500px"
-  width="100%"
-  [zoom]="zoom"
-  [center]="center"
-  [options]="options"
-  (mapClick)="click($event)"
->
-  <map-marker
-    #markerElem
-    *ngFor="let marker of markers"
-    [position]="marker.position"
-    [label]="marker.label"
-    [title]="marker.title"
-    [options]="marker.options"
-    (mapClick)="openInfo(markerElem, marker.info)"
-  >
-  </map-marker>
+<div class="container">
+  <div class="map-container row">
+    <div class="map-frame col-md-11 col-sm-11 col-xs-12">
+      <div id="map"></div>
+    </div>
+    <span class="col-md-1 col-sm-1 col-xs-12">
+      <app-side-bar></app-side-bar>
+    </span>
+  </div>
+  <app-driver-info-popup></app-driver-info-popup>
+  <div class="map-bg"></div>
+</div>
 
-  <map-info-window>{{ infoContent }}</map-info-window>
-</google-map>
+<ng-template #driverInfoModal>
+  <div bsModal class="driver-info-modal">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Szczegóły kierowcy</h4>
+    </div>
+    <div class="modal-body">
+      <div>
+        <p><b>Pełne imię: </b>{{currentDriverInfo.fullname}}</p>
+        <p><b>Telefon:</b> {{currentDriverInfo.phone}}</p>
+      </div>
+      <div *ngIf="currentDriverInfo.hasAnAssignment">
+        <p><b>Zlecenie: </b> {{currentDriverInfo.assignmentTitle}}</p>
+        <p><b>Miejsce rozpoczęcia: </b>{{currentDriverInfo.assignmentStart}}</p>
+        <p><b>Miejsce dostawy: </b> {{currentDriverInfo.assignmentDestination}}</p>
+        <p><b>Data końcowa: </b> {{currentDriverInfo.assignmentDeadline | date}}</p>
+      </div>
+    <div *ngIf="!currentDriverInfo.hasAnAssignment">
+        <p><b>Brak zlecenia.</b></p>
+    </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" (click)="closeModal(); driverInfoModalRef.hide()">Zamknij</button>
+    </div>
+  </div>
+</ng-template>

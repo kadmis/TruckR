@@ -6,6 +6,4 @@ export class RefreshTokenResult implements Result {
     token: string;
     refreshToken: string | null;
     refreshInterval: number | null;
-    role: string;
-    userId: string;
 }

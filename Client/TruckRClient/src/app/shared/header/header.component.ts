@@ -5,8 +5,8 @@ import { LoginManagerService } from 'src/infrastructure/auth/login-manager.servi
 import { NotificationService } from 'src/infrastructure/common/notification.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import jwt_decode from "jwt-decode";
 import { TokenManagerService } from 'src/infrastructure/auth/token-manager.service';
+import { LogoutPipelineService } from 'src/infrastructure/common/logout-pipeline.service';
 
 @Component({
   selector: 'app-header',
@@ -22,27 +22,31 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private refreshState: RefreshStateManagerService,
     private loginManager: LoginManagerService,
     private notifications: NotificationService,
-    private tokenManager: TokenManagerService) {
+    private tokenManager: TokenManagerService,
+    private logoutPipelineService: LogoutPipelineService,
+    private router: Router) {
       
-      if(this.loggedIn) {        
-        this.notifications.showInfo('Ustanowiono odświeżanie sesji.');
+      if(this.loggedIn) {       
         let instantRefresh = this.tokenManager.tokenData.msToExpire < this.tokenManager.refreshInterval;
         this.refreshState.set(instantRefresh);
       }
 
       this.refreshStateSubscription = 
-      this.refreshState.refresh$.subscribe(refreshed=>{
+      this.refreshState.refresh$.subscribe(refreshed=> {
         if(refreshed) {
           this.notifications.showInfo('Odświeżono sesję.');
         } else {
           this.notifications.showWarning('Próba odświeżenia sesji nie powiodła się.');
+          this.logout();
         }
       });
 
       this.logoutSubscription = 
-      this.loginManager.loggedOut$.subscribe(loggedOut=>{
-        if(loggedOut)
+      this.loginManager.loggedOut$.subscribe(loggedState=>{
+        if(loggedState.showMessage===true)
           this.notifications.showInfo('Wylogowano.');
+
+        this.router.navigate(['']);
       });
     }
 
@@ -55,7 +59,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout = ():void => {
-    this.loginManager.logout();
+    this.logoutPipelineService.logout();
+  }
+
+  goToProfile = ():void => {
+
   }
 
   get fullname():string {

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-bootstrap-spinner';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -8,12 +7,11 @@ import { NotificationService } from './notification.service';
 export class LoaderService {
 
   public shown: boolean = false;
-  public loadingText: string;
 
   constructor(private notifications: NotificationService) { }
 
-  show = ():void => {
-    this.notifications.showLoading(this.loadingText);
+  show = (text?:string):void => {
+    this.notifications.showLoading(text);
     this.shown = true;
   }
 

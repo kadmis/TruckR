@@ -14,6 +14,8 @@ namespace Transport.Domain.Documents
 
         private string _name;
 
+        private string _contentType;
+
         private Document()
         {
         }
@@ -24,7 +26,7 @@ namespace Transport.Domain.Documents
             {
                 Id = Guid.NewGuid(),
                 _number = GenerateNumber(ordinalNumber),
-                _name = name,
+                _name = name
             };
         }
 

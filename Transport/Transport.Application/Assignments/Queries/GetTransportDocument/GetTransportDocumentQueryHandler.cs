@@ -26,10 +26,11 @@ namespace Transport.Application.Assignments.Queries.GetTransportDocument
         {
             var query = "SELECT " +
                 "D.Id, " +
-                "D.Name " +
-                "FROM dbo.Documents AS D" +
-                "INNER JOIN dbo.Assignments A" +
-                "ON A.DocumentId = D.Id " +
+                "D.Name, " +
+                "D.Number " +
+                "FROM dbo.Documents AS D " +
+                "INNER JOIN dbo.Assignments AS A " +
+                "ON D.AssignmentId = A.Id " +
                 "WHERE A.Id = @AssignmentId";
 
             try
@@ -45,7 +46,7 @@ namespace Transport.Application.Assignments.Queries.GetTransportDocument
 
                 return new FileStreamResult(file.ContentStream, file.ContentType);
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 return null;
             }
@@ -55,6 +56,7 @@ namespace Transport.Application.Assignments.Queries.GetTransportDocument
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
+            public string Number { get; set; }
         }
     }
 }

@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   authServiceRoot: "https://localhost:44396/auth-service",
-  locationsHub: "https://localhost:44346/locations"
+  locationsHub: "https://localhost:44346/locations",
+  transportServiceRoot: "https://localhost:44396/transport-service",
 };
 
 /*

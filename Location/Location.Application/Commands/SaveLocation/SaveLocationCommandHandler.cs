@@ -2,6 +2,7 @@
 using Location.Application.DTO;
 using Location.Domain.Services;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace Location.Application.Commands.SaveLocation
 
         public async Task<Unit> Handle(SaveLocationCommand request, CancellationToken cancellationToken)
         {
-            await _storage.AddAsync(new LocationModel(request.UserId, request.Coordinates.Latitude, request.Coordinates.Longitude));
+            await _storage.AddAsync(new LocationModel(Guid.Parse(request.UserId), request.Coordinates.Latitude, request.Coordinates.Longitude));
 
             return Unit.Value;
         }

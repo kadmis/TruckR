@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
     private renderer: Renderer2,
     public location: Location,
     @Inject(DOCUMENT) document
-  ) {}
+  ) {
+  }
   @HostListener("window:scroll", ["$event"])
   onWindowScroll(e) {
     if (window.pageYOffset > 100) {

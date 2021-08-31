@@ -28,7 +28,12 @@
             ],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "./assets"
+              }
             ],
             "styles": [
               "src/styles.scss",
@@ -64,10 +69,7 @@
                 }
               ]
             }
-          },
-          "styles":[
-            "node_modules/ngx-toastr/toastr.css"
-          ]
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -78,10 +80,7 @@
             "production": {
               "browserTarget": "truckr-client:build:production"
             }
-          },
-          "styles":[
-            "../node_modules/ngx-toastr/toastr.css"
-          ]
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

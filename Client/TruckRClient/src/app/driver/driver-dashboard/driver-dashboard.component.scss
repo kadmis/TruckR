@@ -1,0 +1,13 @@
+.assignments-table {
+    height:100%;
+    border-radius: 2%;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.assignments-table::-webkit-scrollbar {
+    display: none;
+}

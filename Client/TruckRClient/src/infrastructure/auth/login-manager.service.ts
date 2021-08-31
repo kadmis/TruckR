@@ -10,30 +10,30 @@ import { UserManagerService } from './user-manager.service';
   providedIn: 'root'
 })
 export class LoginManagerService {
-  private loggedInSubject: Subject<LoggedInState>;
-  loggedIn$: Observable<LoggedInState>;
+  private loggedInSubject: Subject<LoggedState>;
+  loggedIn$: Observable<LoggedState>;
 
-  private loggedOutSubject: Subject<boolean>;
-  loggedOut$: Observable<boolean>;
+  private loggedOutSubject: Subject<LoggedState>;
+  loggedOut$: Observable<LoggedState>;
 
   constructor(
     private refreshState: RefreshStateManagerService,
     private tokenManager: TokenManagerService,
     private authenticateService: AuthenticateService,
     private userManager: UserManagerService) {
-      this.loggedInSubject = new Subject<LoggedInState>();
+      this.loggedInSubject = new Subject<LoggedState>();
       this.loggedIn$ = this.loggedInSubject.asObservable();
 
-      this.loggedOutSubject = new Subject<boolean>();
+      this.loggedOutSubject = new Subject<LoggedState>();
       this.loggedOut$ = this.loggedOutSubject.asObservable();
     }
     
-  logout = ():void => {
+  logout = (showMessage?:boolean):void => {
     this.refreshState.clear();
     this.tokenManager.clear();
     this.userManager.clear();
-    this.loggedOutSubject.next(true);
-  }
+    this.loggedOutSubject.next(new LoggedState(false, showMessage));
+  };
 
   login = (username: string, password: string):void => {
     let model = new AuthenticateModel(username, password);
@@ -43,19 +43,17 @@ export class LoginManagerService {
         this.tokenManager.setApiToken(res.token);
         this.tokenManager.setRefreshToken(res.refreshToken, res.refreshInterval);
         this.refreshState.set();
-        this.userManager.setRole(res.role);
-        this.userManager.setId(res.userId);
-        this.userManager.fetchUserDetails();
+        this.userManager.refreshUserData();
       }
-      this.loggedInSubject.next(new LoggedInState(res.successful, res.message));
-    }, (err)=>this.loggedInSubject.next(new LoggedInState(false, err.message)));
-  }
+      this.loggedInSubject.next(new LoggedState(res.successful, true));
+    }, (err)=>this.loggedInSubject.next(new LoggedState(false, err.message)));
+  };
 
   get loggedIn():boolean {
     return this.tokenManager.apiToken !==null && this.tokenManager.refreshToken !== null;
-  }
+  };
 }
 
-export class LoggedInState {
-  constructor(public successful: boolean, public message: string){}
+export class LoggedState {
+  constructor(public loggedIn: boolean, public showMessage: boolean = true){}
 }

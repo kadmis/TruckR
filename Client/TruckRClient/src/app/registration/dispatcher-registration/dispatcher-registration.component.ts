@@ -27,8 +27,7 @@ export class DispatcherRegistrationComponent implements OnInit, OnDestroy {
     private registerDispatcher: RegisterDispatcherService,
     private loader: LoaderService,
     private notification: NotificationService) {
-      this.loader.loadingText = "Rejestrowanie...";
-     }
+    }
 
   ngOnInit(): void {
     this.initForm();
@@ -53,7 +52,7 @@ export class DispatcherRegistrationComponent implements OnInit, OnDestroy {
   }
 
   confirm = ():void => {
-    this.loader.show();
+    this.loader.show("Rejestrowanie...");
     let firstname = this.registrationForm.controls["firstname"].value;
     let lastname = this.registrationForm.controls["lastname"].value;
     let email = this.registrationForm.controls["email"].value;

@@ -32,9 +32,14 @@ export function locationsHubUrl() {
   return environment.locationsHub;
 }
 
+export function transportServiceUrl() {
+  return environment.transportServiceRoot;
+}
+
 const providers = [
 {provide: "AUTH_SERVICE_URL", useFactory: authServiceUrl, deps:[]},
-{provide: "LOCATIONS_HUB_URL", useFactory: locationsHubUrl, deps:[]}
+{provide: "LOCATIONS_HUB_URL", useFactory: locationsHubUrl, deps:[]},
+{provide: "TRANSPORT_SERVICE_URL", useFactory: transportServiceUrl, deps:[]}
 ];
 
 platformBrowserDynamic(providers)

@@ -1,0 +1,162 @@
+<form class="form" [formGroup]="form">
+    <!--Tytuł-->
+    <div class="input-group" [ngClass]="{ 'input-group-focus': focusTitle === true, 'has-success': touchedAndValid(title), 'has-danger': touchedAndInvalid(title) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-single-02"> </i>
+            </div>
+        </div>
+        <input id="firstName" class="form-control" placeholder="Tytuł" formControlName="title" type="text"
+            (focus)="focusTitle = true" (blur)="focusTitle = false" />
+    </div>
+    <!--Opis-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusDescription === true, 'has-success': touchedAndValid(description), 'has-danger': touchedAndInvalid(description)  }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-single-02"> </i>
+            </div>
+        </div>
+        <input id="lastname" class="form-control" placeholder="Opis" formControlName="description" type="text"
+            (focus)="focusDescription = true" (blur)="focusDescription = false" />
+    </div>
+    <!--Dokument transportowy-->
+    <div class="input-group">
+        <label for="document" class="btn btn-round btn-lg" [ngClass]="{'btn-success' : documentValid, 'btn-danger': !documentValid }">
+            Dodaj dokument transportowy
+        </label>
+        <input 
+            id="document"            
+            class="btn btn-round btn-lg" 
+            type="file" 
+            accept=".pdf,.docx"
+            (change)="onDocumentSelected($event.target.files, $event.target)" />
+        <span id="document=name">{{documentName}}</span>
+    </div>
+    <!--Odbiór-->
+    <!--Kraj odbioru-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusStartingCountry === true, 'has-success': touchedAndValid(startingCountry), 'has-danger': touchedAndInvalid(startingCountry) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="startingCountry" class="form-control" placeholder="Kraj odbioru" formControlName="startingCountry"
+            type="text" (focus)="focusStartingCountry = true" (blur)="focusStartingCountry = false" />
+    </div>
+    <!--Miasto odbioru-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusStartingCity === true, 'has-success': touchedAndValid(startingCity), 'has-danger': touchedAndInvalid(startingCity) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="startingCity" class="form-control" placeholder="Miasto odbioru" formControlName="startingCity"
+            type="text" (focus)="focusStartingCity = true" (blur)="focusStartingCity = false" />
+    </div>
+    <!--Kod pocztowy odbioru-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusStartingPostalCode === true, 'has-success': touchedAndValid(startingPostalCode), 'has-danger': touchedAndInvalid(startingPostalCode) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="startingPostalCode" class="form-control" placeholder="Kod pocztowy odbioru"
+            formControlName="startingPostalCode" type="text" (focus)="focusStartingPostalCode = true"
+            (blur)="focusStartingPostalCode = false" />
+    </div>
+    <!--Ulica odbioru-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focuStartingStreet === true, 'has-success': touchedAndValid(startingStreet), 'has-danger': touchedAndInvalid(startingStreet) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="startingStreet" class="form-control" placeholder="Ulica odbioru" formControlName="startingStreet"
+            type="text" (focus)="focuStartingStreet = true" (blur)="focuStartingStreet = false" />
+    </div>
+    <!--Dostawa-->
+    <!--Kraj dostawy-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusDestinationCountry === true, 'has-success': touchedAndValid(destinationCountry), 'has-danger': touchedAndInvalid(destinationCountry) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="destinationCountry" class="form-control" placeholder="Kraj dostawy"
+            formControlName="destinationCountry" type="text" (focus)="focusDestinationCountry = true"
+            (blur)="focusDestinationCountry = false" />
+    </div>
+    <!--Miasto dostawy-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusDestinationCity === true, 'has-success': touchedAndValid(destinationCity), 'has-danger': touchedAndInvalid(destinationCity) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="destinationCity" class="form-control" placeholder="Miasto dostawy" formControlName="destinationCity"
+            type="text" (focus)="focusDestinationCity = true" (blur)="focusDestinationCity = false" />
+    </div>
+    <!--Kod pocztowy dostawy-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusDestinationPostalCode === true, 'has-success': touchedAndValid(destinationPostalCode), 'has-danger': touchedAndInvalid(destinationPostalCode) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="destinationPostalCode" class="form-control" placeholder="Kod pocztowy dostawy"
+            formControlName="destinationPostalCode" type="text" (focus)="focusDestinationPostalCode = true"
+            (blur)="focusDestinationPostalCode = false" />
+    </div>
+    <!--Ulica dostawy-->
+    <div class="input-group" 
+        [ngClass]="{ 'input-group-focus': focusDestinationStreet === true, 'has-success': touchedAndValid(destinationStreet), 'has-danger': touchedAndInvalid(destinationStreet) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input id="destinationStreet" class="form-control" placeholder="Ulica dostawy"
+            formControlName="destinationStreet" type="text" (focus)="focusDestinationStreet = true"
+            (blur)="focusDestinationStreet = false" />
+    </div>
+    <!--Termin dostawy-->
+    <div class="input-group" [ngClass]="{ 'has-success': touchedAndValid(deadline), 'has-danger': touchedAndInvalid(deadline) }">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="tim-icons icon-map-big"> </i>
+            </div>
+        </div>
+        <input 
+        id="datepicker"
+        [bsConfig]="datePickerConfig"
+        placement="top"
+        class="form-control"
+        formControlName="deadline"
+        bsDatepicker
+        [value]="minDate | date: 'DD.MM.YYYY'"
+        placeholder="Czas dostawy">
+
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-success btn-round" (click)="confirm()" [disabled]="!isFormValid">
+                    Stwórz zlecenie
+                </button>
+            </div>
+            <div class="col-md-4 offset-md-4">
+                <button type="reset" class="btn btn-danger btn-round" (click)="close()" data-dismiss="modal">
+                    Anuluj
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,51 +1,42 @@
 import { Injectable } from '@angular/core';
 import { LoginManagerService } from './login-manager.service';
 import { UserDetailsService } from '../methods/user-details/user-details.service';
+import { TokenManagerService } from './token-manager.service';
+import { getTokenData } from './token-decoder';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserManagerService {
-
-  private roleKey: string = "Role";
-  private idKey: string = "Id";
-
   private dispatcher: string = "Dispatcher";
   private driver: string = "Driver";
 
   private _fullName: string;
+  private _id: string;
+  private _role: string;
+  private _authenticationId: string;
 
-  constructor(private fetchDetails: UserDetailsService) {
+  constructor(private tokenManager: TokenManagerService) {
+    this.refreshUserData();
   }
 
-  public setRole = (role:string) => {
-    localStorage.setItem(this.roleKey, role);
-  }
+  public refreshUserData = ():void => {
+    let userData = getTokenData(this.tokenManager.apiToken);
 
-  public setId = (id:string) => {
-    localStorage.setItem(this.idKey, id);
+    this._role = userData.role;
+    this._id = userData.userId;
+    this._fullName = userData.fullName;
+    this._authenticationId = userData.authenticationId;
   }
 
   public clear = ():void => {
-    localStorage.removeItem(this.roleKey);
-    localStorage.removeItem(this.idKey);
     this._fullName = "";
+    this._id = "";
+    this._role = "";
   }
 
-  public fetchUserDetails = ():void => {
-    this.fetchDetails.fetch().subscribe((res)=>{
-      if(res.successful) {
-        this._fullName = res.firstName + ' ' + res.lastName;
-      }
-    })
-  }
-
-  public get fullName():string {
-    return this._fullName;
-  }
-
-  public get role():string {
-    switch(this.currentRole) {
+  public get roleName():string {
+    switch(this._role) {
       case this.dispatcher:
         return 'Dyspozytor';
       case this.driver:
@@ -55,19 +46,23 @@ export class UserManagerService {
     }
   }
 
+  public get fullName():string {
+    return this._fullName;
+  }
+
   public get userId():string {
-    return localStorage.getItem(this.idKey);
+    return this._id;
+  }
+
+  public get authenticationId():string {
+    return this._authenticationId;
   }
 
   public get isDispatcher():boolean {
-    return this.currentRole && this.currentRole === this.dispatcher;
+    return this._role && this._role === this.dispatcher;
   }
 
   public get isDriver():boolean {
-    return this.currentRole && this.currentRole === this.driver;
-  }
-
-  private get currentRole():string | null {
-    return localStorage.getItem(this.roleKey);
+    return this._role && this._role === this.driver;
   }
 }

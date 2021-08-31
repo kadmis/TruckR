@@ -16,5 +16,4 @@ export class FooterComponent implements OnInit {
   get loggedIn():boolean {
     return this.loginManager.loggedIn;
   }
-
 }

@@ -21,6 +21,11 @@ namespace Auth.Infrastructure.Persistence.Repositories
             return _context.UserAuthentications.Add(userAuthentication).Entity;
         }
 
+        public UserAuthentication Update(UserAuthentication userAuthentication)
+        {
+            return _context.UserAuthentications.Update(userAuthentication).Entity;
+        }
+
         public async Task<UserAuthentication> FindById(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.UserAuthentications.FindAsync(new object[] { id }, cancellationToken);

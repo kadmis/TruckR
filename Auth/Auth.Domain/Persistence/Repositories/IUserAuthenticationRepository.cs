@@ -9,5 +9,6 @@ namespace Auth.Domain.Persistence.Repositories
     {
         public Task<UserAuthentication> FindById(Guid id, CancellationToken cancellationToken = default);
         public UserAuthentication Add(UserAuthentication userAuthentication);
+        public UserAuthentication Update(UserAuthentication userAuthentication);
     }
 }

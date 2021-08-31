@@ -8,8 +8,6 @@ namespace Auth.Application.Commands.Authenticate
         public string Token { get; }
         public Guid? RefreshToken { get; }
         public long? RefreshInterval { get; }
-        public string Role { get; }
-        public Guid? UserId { get; }
         public string Message { get; }
         public bool Successful { get; }
 
@@ -17,8 +15,6 @@ namespace Auth.Application.Commands.Authenticate
             string token, 
             Guid? refreshToken, 
             long? refreshInterval, 
-            string role, 
-            Guid? userId,
             string message, bool successful)
         {
             Token = token;
@@ -26,17 +22,15 @@ namespace Auth.Application.Commands.Authenticate
             Message = message;
             Successful = successful;
             RefreshInterval = refreshInterval;
-            Role = role;
-            UserId = userId;
         }
 
-        public static AuthenticationResult Success(string token, Guid refreshToken, long refreshInterval, string role, Guid userId)
+        public static AuthenticationResult Success(string token, Guid refreshToken, long refreshInterval)
         {
-            return new AuthenticationResult(token, refreshToken, refreshInterval, role, userId, string.Empty, true);
+            return new AuthenticationResult(token, refreshToken, refreshInterval, string.Empty, true);
         }
         public static AuthenticationResult Fail(string message)
         {
-            return new AuthenticationResult(string.Empty, null, null, string.Empty, null, $"Authentication failed: {message}", false);
+            return new AuthenticationResult(string.Empty, null, null, $"Authentication failed: {message}", false);
         }
     }
 }

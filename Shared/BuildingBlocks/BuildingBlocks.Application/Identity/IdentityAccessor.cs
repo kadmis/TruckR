@@ -15,10 +15,10 @@ namespace BuildingBlocks.Application.Identity
 
         public Identity UserIdentity()
         {
-            var id = _context.HttpContext.GetId();
-            var name = _context.HttpContext.GetName();
-            var role = _context.HttpContext.GetRole();
-            var authId = _context.HttpContext.GetAuthenticationId();
+            var id = _context.HttpContext.UserId();
+            var name = _context.HttpContext.UserName();
+            var role = _context.HttpContext.UserRole();
+            var authId = _context.HttpContext.UserAuthenticationId();
 
             return Identity.CreateIdentity(id.Value, name, role, authId.Value);
         }
@@ -26,7 +26,7 @@ namespace BuildingBlocks.Application.Identity
 
     internal static class HttpContextIdentityExtensions
     {
-        public static Guid? GetId(this HttpContext context)
+        public static Guid? UserId(this HttpContext context)
         {
             if (Guid.TryParse(context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))
             {
@@ -38,17 +38,17 @@ namespace BuildingBlocks.Application.Identity
             }
         }
 
-        public static string GetName(this HttpContext context)
+        public static string UserName(this HttpContext context)
         {
             return context.User?.FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        public static string GetRole(this HttpContext context)
+        public static string UserRole(this HttpContext context)
         {
             return context.User?.FindFirst(ClaimTypes.Role)?.Value;
         }
 
-        public static Guid? GetAuthenticationId(this HttpContext context)
+        public static Guid? UserAuthenticationId(this HttpContext context)
         {
             if (Guid.TryParse(context.User?.FindFirst(ClaimTypes.Sid)?.Value, out Guid id))
                 return id;

@@ -33,6 +33,7 @@ namespace Auth.Application.JWT
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claims.AddClaim(new Claim(ClaimTypes.Role, user.Role.Value));
             claims.AddClaim(new Claim(ClaimTypes.Sid, userAuthentication.Id.ToString()));
+            claims.AddClaim(new Claim(ClaimTypes.GivenName, $"{user.Firstname} {user.Lastname}"));
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var descriptor = new SecurityTokenDescriptor()

@@ -25,7 +25,6 @@ export class DriverRegistrationComponent implements OnInit {
     private registerDriver: RegisterDriverService,
     private loader: LoaderService,
     private notification: NotificationService) {
-      this.loader.loadingText = "Rejestrowanie...";
      }
 
   ngOnInit(): void {
@@ -51,7 +50,7 @@ export class DriverRegistrationComponent implements OnInit {
   }
 
   confirm = ():void => {
-    this.loader.show();
+    this.loader.show("Rejestrowanie...");
     let firstname = this.registrationForm.controls["firstname"].value;
     let lastname = this.registrationForm.controls["lastname"].value;
     let email = this.registrationForm.controls["email"].value;

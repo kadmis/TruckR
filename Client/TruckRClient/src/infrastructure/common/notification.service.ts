@@ -16,6 +16,9 @@ export class NotificationService {
   private loadingTitle: string = "Ładowanie...";
   private loadingId: number;
 
+  private validationErrorConfig: Partial<IndividualConfig>;
+  private validationErrorTitle: string = "Błąd walidacji";
+
   constructor(private toastr: ToastrService) {
     this.config = {
       positionClass: 'toast-bottom-right',
@@ -27,9 +30,17 @@ export class NotificationService {
       positionClass: 'toast-bottom-right',
       closeButton: false,
       progressBar: false,
-      timeOut: 30_000,
+      disableTimeOut: true,
       tapToDismiss: false
-    }
+    };
+
+    this.validationErrorConfig = {
+      positionClass: 'toast-top-right',
+      closeButton: true,
+      progressBar: false,
+      disableTimeOut: true,
+      tapToDismiss: true
+    };
    }
 
   showSuccess = (message: string, title?: string):void => {
@@ -50,6 +61,10 @@ export class NotificationService {
 
   showLoading = (message?: string):void => {
     this.loadingId = this.toastr.info(message ? message : this.loadingTitle, "", this.loadingConfig).toastId;
+  }
+
+  showValidationError = (message:string):void => {
+    this.toastr.error(message, this.validationErrorTitle, this.validationErrorConfig);
   }
 
   closeLoading = ():void => {

@@ -33,7 +33,7 @@ namespace Transport.Application.Assignments.Queries.AssignmentDetails
                 "A.CreatedOn, " +
                 "A.CompletedOn, " +
                 "A.AssignedOn " +
-                "FROM dbo.Assignments AS A" +
+                "FROM dbo.Assignments AS A " +
                 "WHERE A.Id = @AssignmentId";
 
             try

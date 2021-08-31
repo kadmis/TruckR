@@ -1,4 +1,5 @@
-﻿using Location.Application.Commands.SaveLocation;
+﻿using BuildingBlocks.API.SignalR.Extensions;
+using Location.Application.Commands.SaveLocation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -18,17 +19,13 @@ namespace Location.API.Hubs
             _mediator = mediator;
         }
 
-        public override async Task OnConnectedAsync()
+        public async override Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.Others.SendAsync("Connected", $"{Context.ConnectionId} joined locations!");
+            await Clients.Others.SendAsync("UserDisconnected", Context.HubUserId());
+            await base.OnDisconnectedAsync(exception);
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
-        {
-            await Clients.Others.SendAsync("Disconnected", $"{Context.ConnectionId} left locations.");
-        }
-
-        //[Authorize(Roles = "Driver")]
+        [Authorize(Roles = "Driver")]
         public async Task ShareLocation(SaveLocationCommand location)
         {
             await Clients.Others.SendAsync("LocationShared", location);

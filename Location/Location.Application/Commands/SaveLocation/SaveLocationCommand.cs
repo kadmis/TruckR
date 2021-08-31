@@ -5,7 +5,7 @@ namespace Location.Application.Commands.SaveLocation
 {
     public class SaveLocationCommand : ICommand
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         public Coordinates Coordinates { get; set; }
     }
 

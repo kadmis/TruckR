@@ -100,9 +100,10 @@ namespace Transport.Domain.Assignments
         /// </summary>
         /// <param name="driver">Given driver.</param>
         /// <returns></returns>
-        public Assignment AssignDriver(Guid driverId)
+        public Assignment AssignDriver(Guid driverId, IDriversActiveAssignment driversActiveAssignment)
         {
             CheckRule(new AssignmentAlreadyAssignedRule(this));
+            CheckRule(new OneActiveAssignmentPerDriverRule(driverId, driversActiveAssignment));
 
             _driverId = driverId;
             _assignedOn = Clock.Now;

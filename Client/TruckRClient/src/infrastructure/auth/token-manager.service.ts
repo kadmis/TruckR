@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import jwt_decode from "jwt-decode";
-import { TokenDecoder, TokenData } from './token-decoder';
+import { TokenData, getTokenData } from './token-decoder';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +28,11 @@ export class TokenManagerService {
   }
 
   public get tokenData():TokenData {
-    return TokenDecoder.getTokenData(this.apiToken);
+    return getTokenData(this.apiToken);
   }
 
   public get tokenExpired():boolean {
-    return TokenDecoder.getTokenData(this.apiToken).expired;
+    return getTokenData(this.apiToken).expired;
   }
 
   public get apiToken():string {

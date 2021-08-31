@@ -1,9 +1,7 @@
-﻿using BuildingBlocks.Application.Handlers;
+﻿using BuildingBlocks.Application.Data;
+using BuildingBlocks.Application.Handlers;
 using BuildingBlocks.Application.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Transport.Domain.Assignments;
@@ -14,13 +12,16 @@ namespace Transport.Application.Assignments.Commands.TakeAssignment
     {
         private readonly IIdentityAccessor _identityAccessor;
         private readonly IAssignmentsRepository _assignmentsRepository;
+        private readonly ISqlConnectionFactory _connectionFactory;
 
         public TakeAssignmentCommandHandler(
-            IIdentityAccessor identityAccessor, 
-            IAssignmentsRepository assignmentsRepository)
+            IIdentityAccessor identityAccessor,
+            IAssignmentsRepository assignmentsRepository, 
+            ISqlConnectionFactory connectionFactory)
         {
             _identityAccessor = identityAccessor;
             _assignmentsRepository = assignmentsRepository;
+            _connectionFactory = connectionFactory;
         }
 
         public async Task<TakeAssignmentResult> Handle(TakeAssignmentCommand request, CancellationToken cancellationToken)
@@ -31,7 +32,7 @@ namespace Transport.Application.Assignments.Commands.TakeAssignment
 
                 var assignment = await _assignmentsRepository.Find(request.AssignmentId, cancellationToken);
 
-                assignment.AssignDriver(user.UserId);
+                assignment.AssignDriver(user.UserId, new DriversActiveAssignment(_connectionFactory));
 
                 return TakeAssignmentResult.Success();
             }

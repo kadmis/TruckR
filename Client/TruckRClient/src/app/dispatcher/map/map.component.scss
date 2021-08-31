@@ -1,0 +1,24 @@
+.map-container {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 30px;
+    border-radius: 2%;
+  }
+  
+  .map-frame {
+    border-radius: 2%;
+  }
+  
+  #map {
+    height: 100%;
+    border-radius: 2%;
+  }
+
+  @media (max-width: 768px) {
+    .map-frame {
+      height:90%;
+    }
+  }

@@ -14,15 +14,15 @@ export class RedirectComponent implements OnInit {
     userManager: UserManagerService,
     loginManager: LoginManagerService,
     router: Router) {
+      console.log('Redirecting...');
       if(!loginManager.loggedIn)
         router.navigate(['login'])
       if(loginManager.loggedIn && userManager.isDispatcher)
-        router.navigate(['map']);
+        router.navigate(['dispatcher-dashboard']);
       if(loginManager.loggedIn && userManager.isDriver)
         router.navigate(['driver-dashboard']);
     }
 
   ngOnInit(): void {
   }
-
 }

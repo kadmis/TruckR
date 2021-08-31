@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/infrastructure/common/notification.service';
 import { LoaderService } from 'src/infrastructure/common/loader.service';
-import { UserManagerService } from 'src/infrastructure/auth/user-manager.service';
 
 @Component({
   selector: 'app-login',
@@ -26,25 +25,21 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private loginManager: LoginManagerService,
-    private userManager: UserManagerService,
     private notifications: NotificationService,
     private router: Router,
     private loader: LoaderService 
     ) {
-      this.loader.loadingText = "Logowanie...";
       this.loggedInSubscription = this.loginManager.loggedIn$.subscribe((state)=> {
         loader.hide();
-        if(state.successful) {
-          this.notifications.showSuccess('Zalogowano!', 'Sukces');
-          if(userManager.isDispatcher)
-            this.router.navigate(["/map"]);
-          else
-            this.router.navigate(["/"]);
+        if(state.loggedIn) {
+          this.notifications.showSuccess('Zalogowano!');
+          this.router.navigate(['']);
         } else {
-          this.notifications.showError('Logowanie nie powiodło się.', 'Błąd');
+          this.notifications.showError('Logowanie nie powiodło się.');
         }
       });
     }
+    
   ngOnInit(): void {
     this.initForm();
     var body = document.getElementsByTagName("body")[0];
@@ -66,9 +61,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   confirm = ():void => {
-    let login = this.loginForm.controls["login"].value;
-    let password = this.loginForm.controls["password"].value;
-    this.loader.show();
-    this.loginManager.login(login, password);
+    this.loader.show("Logowanie...");
+    this.loginManager.login(
+      this.loginForm.controls["login"].value, 
+      this.loginForm.controls["password"].value);
   }
 }

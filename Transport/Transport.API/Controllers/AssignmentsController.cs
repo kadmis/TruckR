@@ -8,7 +8,10 @@ using Transport.Application.Assignments.Commands.CreateAssignment;
 using Transport.Application.Assignments.Commands.FinishAssignment;
 using Transport.Application.Assignments.Commands.TakeAssignment;
 using Transport.Application.Assignments.Queries.AssignmentDetails;
+using Transport.Application.Assignments.Queries.DriversCurrentAssignment;
+using Transport.Application.Assignments.Queries.FreeAssignments;
 using Transport.Application.Assignments.Queries.GetTransportDocument;
+using Transport.Application.Assignments.Queries.TransportDocumentInfo;
 
 namespace Transport.API.Controllers
 {
@@ -59,6 +62,24 @@ namespace Transport.API.Controllers
             CancellationToken cancellationToken = default)
         {
             return await _mediator.Send(new GetTransportDocumentQuery(assignmentId), cancellationToken);
+        }
+
+        [HttpGet("{assignmentId}/document-info")]
+        public async Task<JsonResult> FetchTransportDocumentInfo(Guid assignmentId,CancellationToken cancellationToken = default)
+        {
+            return new JsonResult(await _mediator.Send(new TransportDocumentInfoQuery(assignmentId), cancellationToken));
+        }
+
+        [HttpGet("drivers-current-assignment/{driverId}")]
+        public async Task<JsonResult> DriversCurrentAssignment(Guid driverId, CancellationToken cancellationToken = default)
+        {
+            return new JsonResult(await _mediator.Send(new DriversCurrentAssignmentQuery(driverId), cancellationToken));
+        }
+
+        [HttpGet("free-assignments")]
+        public async Task<JsonResult> FetchFreeAssignments([FromQuery] FreeAssignmentsQuery query, CancellationToken cancellationToken = default)
+        {
+            return new JsonResult(await _mediator.Send(query, cancellationToken));
         }
     }
 }

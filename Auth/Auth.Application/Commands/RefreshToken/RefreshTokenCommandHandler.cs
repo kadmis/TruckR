@@ -11,16 +11,13 @@ namespace Auth.Application.Commands.RefreshToken
 {
     public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, RefreshTokenResult>
     {
-        private readonly IIdentityAccessor _identity;
         private readonly IUnitOfWork _uow;
         private readonly ITokenGenerator _tokenGenerator;
 
         public RefreshTokenCommandHandler(
-            IIdentityAccessor identity,
             IUnitOfWork uow,
             ITokenGenerator tokenGenerator)
         {
-            _identity = identity ?? throw new ArgumentNullException(nameof(identity));
             _uow = uow ?? throw new ArgumentNullException(nameof(uow));
             _tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
         }
@@ -29,23 +26,24 @@ namespace Auth.Application.Commands.RefreshToken
         {
             try
             {
-                var identity = _identity.UserIdentity();
+                var user = await _uow.UserRepository.FindById(request.UserId, cancellationToken);
 
-                var user = await _uow.UserRepository.FindById(identity.UserId, cancellationToken);
+                var authentication = await _uow.UserAuthenticationRepository.FindById(request.AuthenticationId, cancellationToken);
 
-                var authentication = await _uow.UserAuthenticationRepository.FindById(identity.AuthenticationId, cancellationToken);
+                var refreshed = UserAuthentication.Refresh(user, authentication, request.RefreshToken);
 
-                var newAuthentication = UserAuthentication.Refresh(user, authentication, request.RefreshToken);
+                var token = _tokenGenerator.GenerateFor(user, refreshed);
 
-                var token = _tokenGenerator.GenerateFor(user, newAuthentication);
+                refreshed.Activate(token.ValidUntil);
 
-                newAuthentication.Activate(token.ValidUntil);
-
-                _uow.UserAuthenticationRepository.Add(newAuthentication);
+                if (refreshed.Id == authentication.Id)
+                    _uow.UserAuthenticationRepository.Update(refreshed);
+                else
+                    _uow.UserAuthenticationRepository.Add(refreshed);
 
                 await _uow.Save(cancellationToken);
 
-                return RefreshTokenResult.Success(token.Value, newAuthentication.RefreshToken.Value, token.RefreshInterval, user.Role.Value, user.Id);
+                return RefreshTokenResult.Success(token.Value, refreshed.RefreshToken.Value, token.RefreshInterval);
             }
             catch (Exception ex)
             {

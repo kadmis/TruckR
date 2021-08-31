@@ -1,0 +1,21 @@
+<span class="sidebar-frame">
+    <div class="col-xs-6-offset-4">
+        <button class="btn btn-success btn-round btn-lg" tooltip="Utwórz zlecenie" (click)="openCreateAssignmentModal()">
+            <i class="tim-icons icon-simple-add"></i>
+        </button>
+    </div>
+</span>
+
+<ng-template #createAssignmentModal>
+    <div bsModal class="create-assignment-modal">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <h4>Utwórz zlecenie</h4>
+            </div>
+            <div class="modal-body">
+                <app-create-assignment (closed)="closeCreateAssignmentModal()"></app-create-assignment>
+            </div>
+        </div>
+    </div>
+</ng-template>
+

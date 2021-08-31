@@ -25,10 +25,16 @@ export class RefreshStateManagerService {
 
   public set = (instant?: boolean):void => {
     if(instant) 
-      this.refresh(this.tokenManagerService.refreshToken);
+      this.refresh(
+        this.tokenManagerService.refreshToken, 
+        this.userManagerService.userId, 
+        this.userManagerService.authenticationId);
 
     this.refreshIntervalId = setInterval(()=> 
-      this.refresh(this.tokenManagerService.refreshToken), (Number)(this.tokenManagerService.refreshInterval));
+    this.refresh(
+      this.tokenManagerService.refreshToken, 
+      this.userManagerService.userId, 
+      this.userManagerService.authenticationId), (Number)(this.tokenManagerService.refreshInterval));
   }
 
   public clear = ():void => {
@@ -37,14 +43,15 @@ export class RefreshStateManagerService {
     }
   }
 
-  private refresh = (refreshToken: string):void => {
-    let model = new RefreshTokenModel(refreshToken);
+  private refresh = (refreshToken: string, userId: string, authenticationId: string):void => {
+    let model = new RefreshTokenModel(refreshToken, userId, authenticationId);
     this.refreshTokenService
       .refresh(model)
       .subscribe((res)=>{
         if(res.successful) {
           this.tokenManagerService.setApiToken(res.token);
           this.tokenManagerService.setRefreshToken(res.refreshToken, res.refreshInterval);
+          this.userManagerService.refreshUserData();
           this.clear();
           this.set();
         } else {

@@ -206,66 +206,13 @@
   }
 }
 
+.map-page {
+  background-color: $background-black;
+}
+
 .login-page,
-.register-page {
+.register-page,
+.map-page {
   background-image: url("/assets/img/dots.png");
   background-size: contain;
-}
-
-@include media-breakpoint-down(md) {
-  .section:nth-of-type(2) {
-    .path {
-      left: 10% !important;
-    }
-    .path2 {
-      left: 20% !important;
-    }
-  }
-
-  .info:first-of-type {
-    padding-top: 10% !important;
-  }
-}
-
-@include media-breakpoint-down(sm) {
-  .card-login img {
-    width: 70%;
-  }
-
-  .section:nth-of-type(2) {
-    .path,
-    .path2 {
-      left: 0 !important;
-    }
-  }
-  .section-coins {
-    margin-top: 0 !important;
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .card-login {
-    margin-top: 100px;
-    img {
-      width: 350px;
-    }
-  }
-
-  .profile-page .page-header {
-    max-height: unset;
-  }
-
-  .landing-page {
-    .page-header {
-      h1 {
-        margin-top: 100px;
-      }
-    }
-  }
-}
-
-@include media-breakpoint-up(md) {
-  .info:first-of-type {
-    padding-top: 60%;
-  }
 }

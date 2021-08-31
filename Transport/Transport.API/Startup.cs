@@ -1,13 +1,12 @@
 using Auth.IntegrationEvents;
 using BuildingBlocks.API.ServicesExtensions;
 using BuildingBlocks.EventBus.Externals;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
+using Transport.API.Hubs;
 using Transport.Infrastructure.DependencyInjection;
 
 namespace Transport.API
@@ -28,6 +27,7 @@ namespace Transport.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSignalR();
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
             services.AddJwtAuthentication(Configuration);
             services.AddInfrastructure(Configuration);
@@ -57,6 +57,7 @@ namespace Transport.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<TransportHub>("/transport");
             });
 
             app

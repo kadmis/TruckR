@@ -40,6 +40,12 @@ namespace Auth.Domain.Data.Entities
             CheckRule(new UserAuthenticationMustBeValid(userAuthentication));
             CheckRule(new RefreshTokenMustBeValid(providedToken, userAuthentication));
 
+            if(userAuthentication.ValidUntil >= Clock.Now)
+            {
+                userAuthentication.GenerateRefreshToken();
+                return userAuthentication;
+            }
+
             userAuthentication.Invalidate();
 
             return new UserAuthentication
@@ -49,10 +55,10 @@ namespace Auth.Domain.Data.Entities
             };
         }
 
-        public UserAuthentication Activate(DateTime validUntil)
+        public UserAuthentication Activate(DateTime tokenValidUntil)
         {
             AuthenticationDate = Clock.Now;
-            ValidUntil = validUntil;
+            ValidUntil = tokenValidUntil.AddDays(7);
             RefreshToken = Guid.NewGuid();
 
             return this;
@@ -62,6 +68,11 @@ namespace Auth.Domain.Data.Entities
         {
             ValidUntil = Clock.Now.AddMinutes(-1);
             RefreshToken = null;
+        }
+
+        private void GenerateRefreshToken()
+        {
+            RefreshToken = Guid.NewGuid();
         }
     }
 }

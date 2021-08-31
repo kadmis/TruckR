@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Coordinates } from './coordinates';
+import { Coordinates } from '../models/coordinates';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationSpooferService {
 
+  private intervalId: any;
   private spoofedPath = [
     new Coordinates(50.39125287123264, 18.952261487581307),
     new Coordinates(50.392700495393356, 18.952474362851998),
@@ -35,12 +36,16 @@ export class LocationSpooferService {
   };
 
   public startSendingFakeGeoLocations = ():void => {
-    setInterval(()=>{
+    this.intervalId = setInterval(()=>{
       let pos = this.next();
-      console.log('[LocationSpoofer] Sending fake coordinates: ['+pos.latitude+', '+pos.longitude+']');
+      //console.log('[LocationSpoofer] Sending fake coordinates: ['+pos.latitude+', '+pos.longitude+']');
       this.geolocate.change({lat: pos.latitude, lng: pos.longitude});
-    },15*1000);
+    },1000);
   };
+
+  public stopSendingFakeGeoLocations = ():void => {
+    clearInterval(this.intervalId);
+  }
 
   private next = ():Coordinates => {
     let next: Coordinates;
