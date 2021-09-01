@@ -19,11 +19,13 @@ using Transport.Domain.Groups;
 using Transport.Infrastructure.Events.Handlers;
 using Transport.Infrastructure.Events.Mapping;
 using Transport.Infrastructure.Events.Processing;
+using Transport.Infrastructure.Jobs;
 using Transport.Infrastructure.Persistence;
 using Transport.Infrastructure.Persistence.Context;
 using Transport.Infrastructure.Persistence.Files;
 using Transport.Infrastructure.Persistence.Repositories;
 using Transport.Infrastructure.Processing;
+using Transport.SignalRClient;
 
 namespace Transport.Infrastructure.DependencyInjection
 {
@@ -31,13 +33,16 @@ namespace Transport.Infrastructure.DependencyInjection
     {
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddPersistence(configuration);
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddApplication();
             services.AddProcessing();
-            services.AddPersistence(configuration);
             services.AddCreation();
             services.AddSqlConnectionFactory(configuration.GetConnectionString("DEV"));
             services.AddFileStorage();
             services.AddEvents();
+            services.AddHubClients("https://localhost:44318");
+            services.AddAssignmentsProcessing();
         }
 
         private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -74,7 +79,6 @@ namespace Transport.Infrastructure.DependencyInjection
 
         private static void AddEvents(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddQuartz(q =>
             {
                 q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 1; });
@@ -101,6 +105,23 @@ namespace Transport.Infrastructure.DependencyInjection
             services.AddRabbit();
             services.AddTransient<IEventHandler<DispatcherActivatedEvent>, DispatcherActivatedEventHandler>();
             services.AddTransient<IEventHandler<DriverActivatedEvent>, DriverActivatedEventHandler>();
+        }
+
+        private static void AddAssignmentsProcessing(this IServiceCollection services)
+        {
+            services.AddQuartz(q =>
+            {
+                q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 1; });
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                q.ScheduleJob<AssignmentCheckJob>(trigger =>
+                {
+                    trigger.WithIdentity("assignment-check-trigger")
+                    .WithSimpleSchedule(s => { s.WithIntervalInSeconds(120).RepeatForever(); })
+                    .WithPriority(2)
+                    .StartNow();
+                });
+            });
         }
     }
 }

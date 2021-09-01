@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Transport.API.Hubs;
+using Transport.API.Hubs.ConnectedUsers;
 using Transport.Infrastructure.DependencyInjection;
 
 namespace Transport.API
@@ -28,6 +29,8 @@ namespace Transport.API
         {
             services.AddControllers();
             services.AddSignalR();
+            services.AddSingleton<ConnectedDriversService>();
+            services.AddSingleton<ConnectedDispatchersService>();
             services.AddSwaggerWithJwt(_apiTitle, _apiVersion);
             services.AddJwtAuthentication(Configuration);
             services.AddInfrastructure(Configuration);

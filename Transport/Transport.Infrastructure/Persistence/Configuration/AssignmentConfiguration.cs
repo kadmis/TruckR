@@ -68,6 +68,10 @@ namespace Transport.Infrastructure.Persistence.Configuration
                 .Property("_completedOn")
                 .HasColumnName("CompletedOn")
                 .IsRequired(false);
+            builder
+                .Property("_failedOn")
+                .HasColumnName("FailedOn")
+                .IsRequired(false);
         }
     }
 }

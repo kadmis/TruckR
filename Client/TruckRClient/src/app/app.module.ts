@@ -39,6 +39,7 @@ import { DatetimePipe } from 'src/infrastructure/pipes/datetime.pipe';
 import {LOCALE_ID} from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePL from '@angular/common/locales/pl';
+import { CountdownComponent } from './driver/countdown/countdown.component';
 
 registerLocaleData(localePL);
 
@@ -56,6 +57,7 @@ registerLocaleData(localePL);
     ActivateComponent,
     CreateAssignmentComponent,
     SideBarComponent,
+    CountdownComponent,
   ],
   imports: [
     BrowserAnimationsModule,

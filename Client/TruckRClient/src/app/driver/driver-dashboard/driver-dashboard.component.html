@@ -1,32 +1,33 @@
 <div class="container">
-    <div *ngIf="hasActiveAssignment" class="row">
-        <div class="col-sm-12 col-md-12">
-            <h3>Bieżące zlecenie                             
-                <button 
-                type="button" 
-                rel="tooltip" 
-                tooltip="Zakończ zlecenie" 
-                class="btn btn-info btn-sm btn-icon" 
+    <div *ngIf="hasActiveAssignment" class="row current-assignment">
+        <div class="col-sm-12 col-md-12 current-assignment-header">
+            <h3>Bieżące zlecenie</h3>
+        </div>
+        <div class="col-sm-12 col-md-12 current-assignment-actions">
+            <button type="button" rel="tooltip" tooltip="Zakończ zlecenie" class="btn btn-info btn-lg btn-icon"
                 (click)="finishCurrentAssignment()">
                 <i class="tim-icons icon-check-2"></i>
-            </button></h3>
+            </button>
+            <button type="button" rel="tooltip" tooltip="Pobierz dokument transportowy" class="btn btn-info btn-lg btn-icon"
+                (click)="downloadTransportDocument(currentAssignment.id)">
+                <i class="tim-icons icon-attach-87"></i>
+            </button>
         </div>
-        <div class="col-sm-12 col-md-12">
-            <p>Miejsce odbioru: {{start}}</p>
-            <p>Miejsce dostawy: {{destination}}</p>
+        <div class="col-sm-12 col-md-12 current-assignment-timer">
+            <app-countdown countdownLabel="Pozostały czas" [dDay]="deadline"></app-countdown>
+        </div>
+        <div class="col-sm-12 col-md-12 current-assignment-info">
+            <p><b>Miejsce odbioru:</b> {{start}}</p>
+            <p><b>Miejsce dostawy:</b> {{destination}}</p>
         </div>
     </div>
-    <div class="row">
+    <div class="row assignments-list">
         <div class="col">
-            <h3>Lista wolnych zleceń                             
-                <button 
-                type="button" 
-                rel="tooltip" 
-                tooltip="Odśwież zlecenia" 
-                class="btn btn-info btn-sm btn-icon" 
-                (click)="refreshAssignmentsList()">
-                <i class="tim-icons icon-refresh-02"></i>
-            </button></h3>
+            <h3>Lista wolnych zleceń
+                <button type="button" rel="tooltip" tooltip="Odśwież zlecenia" class="btn btn-info btn-sm btn-icon"
+                    (click)="refreshAssignmentsList()">
+                    <i class="tim-icons icon-refresh-02"></i>
+                </button></h3>
             <span class="assignments-table table-responsive">
                 <table class="table">
                     <thead>
@@ -45,28 +46,18 @@
                             <td>{{assignment.to}}</td>
                             <td class="text-right">{{assignment.deadlineUTC | date}}</td>
                             <td class="td-actions text-right">
-                                <button 
-                                    *ngIf="!hasActiveAssignment" 
-                                    type="button" 
-                                    rel="tooltip" 
-                                    tooltip="Podejmij zlecenie" 
-                                    class="btn btn-success btn-sm btn-icon" 
+                                <button *ngIf="!hasActiveAssignment" type="button" rel="tooltip"
+                                    tooltip="Podejmij zlecenie" class="btn btn-success btn-sm btn-icon"
                                     (click)="takeAssignment(assignment.id)">
                                     <i class="tim-icons icon-check-2"></i>
                                 </button>
-                                <button 
-                                    type="button" 
-                                    rel="tooltip" 
-                                    tooltip="Szczegóły zlecenia" 
-                                    class="btn btn-success btn-sm btn-icon" 
+                                <button type="button" rel="tooltip" tooltip="Szczegóły zlecenia"
+                                    class="btn btn-success btn-sm btn-icon"
                                     (click)="fetchAssignmentDetails(assignment.id)">
                                     <i class="tim-icons icon-settings-gear-63"></i>
                                 </button>
-                                <button 
-                                    type="button" 
-                                    rel="tooltip" 
-                                    tooltip="Pobierz dokument przewozowy" 
-                                    class="btn btn-success btn-sm btn-icon" 
+                                <button type="button" rel="tooltip" tooltip="Pobierz dokument przewozowy"
+                                    class="btn btn-success btn-sm btn-icon"
                                     (click)="downloadTransportDocument(assignment.id)">
                                     <i class="tim-icons icon-attach-87"></i>
                                 </button>
@@ -80,12 +71,8 @@
     <div class="map-bg"></div>
 </div>
 <nav aria-label="Page navigation example">
-    <pagination class="justify-content-center" 
-        [(ngModel)]="currentPage" 
-        [totalItems]="totalItems" 
-        [itemsPerPage]="currentPageSize"
-        [maxSize]="10"
-        (pageChanged)="fetchAssignments($event, false)">
+    <pagination class="justify-content-center" [(ngModel)]="currentPage" [totalItems]="totalItems"
+        [itemsPerPage]="currentPageSize" [maxSize]="10" (pageChanged)="fetchAssignments($event, false)">
     </pagination>
 </nav>
 
@@ -93,15 +80,14 @@
     <div bsModal class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title pull-left">Szczegóły zlecenia</h4>
-          </div>
-          <div class="modal-body">
-              <p>Tytuł: {{assignmentDetails.title}}</p>
-              <p>Opis: {{assignmentDetails.description}}</p>
-
-          </div>
-          <div class="modal-footer">
+        </div>
+        <div class="modal-body">
+            <p>Tytuł: {{assignmentDetails.title}}</p>
+            <p>Opis: {{assignmentDetails.description}}</p>
+            <p></p>
+        </div>
+        <div class="modal-footer">
             <button type="button" class="btn btn-default" (click)="assignmentDetailsModalRef.hide()">Zamknij</button>
-          </div>
-      </div>
+        </div>
+    </div>
 </ng-template>
-

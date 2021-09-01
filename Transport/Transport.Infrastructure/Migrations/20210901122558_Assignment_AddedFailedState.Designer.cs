@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Migrations
 {
     [DbContext(typeof(TransportContext))]
-    partial class TransportContextModelSnapshot : ModelSnapshot
+    [Migration("20210901122558_Assignment_AddedFailedState")]
+    partial class Assignment_AddedFailedState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

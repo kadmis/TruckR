@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, ViewEncapsulation
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { Subscription } from 'rxjs';
 import { CreateAssignmentComponent } from '../../create-assignment/create-assignment.component';
-import { AssignmentEventsService } from 'src/infrastructure/assignments/assignment-events.service';
+import { TransportHubService } from 'src/infrastructure/assignments/transport-hub.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -16,13 +16,13 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
   constructor(
     private modalService: BsModalService,
-    private assignmentEvents: AssignmentEventsService) {
+    private transportHubService: TransportHubService) {
       this.assignmentCreatedSubscription =
-      this.assignmentEvents.assignmentCreated$.subscribe(()=> {
+      this.transportHubService.assignmentCreated$.subscribe(()=> {
         if(this.createAssignmentModalRef) {
           this.modalService.hide(this.createAssignmentModalRef.id);
         }
-      })
+      });
   }
 
   ngOnDestroy(): void {

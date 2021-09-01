@@ -35,6 +35,8 @@ namespace Transport.Domain.Assignments
 
         private DateTime? _completedOn;
 
+        private DateTime? _failedOn;
+
         public bool Assigned => _assignedOn.HasValue && _driverId.HasValue;
         public bool Completed => _completedOn.HasValue;
 
@@ -122,6 +124,15 @@ namespace Transport.Domain.Assignments
             CheckRule(new AssignmentAlreadyCompletedRule(this));
 
             _completedOn = Clock.Now;
+            return this;
+        }
+
+        public Assignment Fail()
+        {
+            CheckRule(new AssignmentAlreadyCompletedRule(this));
+
+            _failedOn = Clock.Now;
+
             return this;
         }
     }

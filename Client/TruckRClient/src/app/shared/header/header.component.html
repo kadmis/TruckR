@@ -24,6 +24,12 @@
         </div>
       </div>
       <ul class="navbar-nav">
+        <li *ngIf="!loggedIn" class="nav-item">
+          <a class="nav-link" [routerLink]="['/driver-registration']"> Rejestracja kierowcy </a>
+        </li>
+        <li *ngIf="!loggedIn" class="nav-item">
+            <a class="nav-link" [routerLink]="['/dispatcher-registration']"> Rejestracja dyspozytora </a>
+        </li>
         <li *ngIf="loggedIn" class="nav-item">
           <a class="nav-link" [routerLink]="['']" (click)="goToProfile()">
             {{fullname}}

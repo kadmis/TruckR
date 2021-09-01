@@ -17,6 +17,7 @@ import { DownloadTransportDocumentService } from 'src/infrastructure/methods/dow
 import { FinishAssignmentService } from 'src/infrastructure/methods/finish-assignment/finish-assignment.service';
 import { TransportDocumentInfoService } from 'src/infrastructure/methods/transport-document-info/transport-document-info.service';
 import * as FileSaver from 'file-saver';
+import { TransportHubService } from 'src/infrastructure/assignments/transport-hub.service';
 
 @Component({
   selector: 'app-driver-dashboard',
@@ -25,6 +26,13 @@ import * as FileSaver from 'file-saver';
 })
 export class DriverDashboardComponent implements OnInit {
   private locationsConnectionSubscription: Subscription;
+  private transportHubConnectionSubscription: Subscription;
+  private sharedConnectionSubscription: Subscription;
+  private assignmentCreatedSubscription: Subscription;
+  private assignmentTakenSubscription: Subscription;
+  private assignmentFinishedSubscription: Subscription;
+  private assignmentFailedSubscription: Subscription;
+  private assignmentExpiredSubscription: Subscription;
 
   currentPage: number = 1;
   currentPageSize: number = 5;
@@ -40,6 +48,7 @@ export class DriverDashboardComponent implements OnInit {
 
   constructor(
     private locationsService: LocationsService,
+    private transportHubService: TransportHubService,
     private userManager: UserManagerService,
     private currentDriversAssignment: DriversAssignmentService,
     private assignmentDetailsService: AssignmentDetailsService,
@@ -52,9 +61,9 @@ export class DriverDashboardComponent implements OnInit {
     private transportDocumentInfo: TransportDocumentInfoService,
     private loader: LoaderService) {
 
-      this.locationsConnectionSubscription =
-      this.locationsService.$connected.subscribe(connected=>{
-        if(connected.connected===false) {
+    this.locationsConnectionSubscription =
+      this.locationsService.$connected.subscribe(connected => {
+        if (connected.connected === false) {
           this.locationsService.stopWatchingSpoofedLocation();
           this.locationsService.stopWatchingLocation();
 
@@ -63,61 +72,122 @@ export class DriverDashboardComponent implements OnInit {
           this.locationsService.startWatchingSpoofedLocation();
         }
       });
-    }
+
+    this.transportHubConnectionSubscription =
+      this.transportHubService.$connected.subscribe(connected => {
+        if (connected) {
+          this.transportHubService.onAssignmentCreated();
+          this.transportHubService.onAssignmentTaken();
+          this.transportHubService.onAssignmentFinished();
+          this.transportHubService.onAssignmentExpired();
+          this.transportHubService.onAssignmentFailed();
+
+          this.assignmentCreatedSubscription =
+            this.transportHubService.assignmentCreated$.subscribe(res => {
+              if (res) {
+                this.refreshAssignmentsList();
+              }
+            });
+
+          this.assignmentTakenSubscription =
+            this.transportHubService.assignmentTaken$.subscribe(res => {
+              if (res) {
+                this.refreshAssignmentsList();
+              }
+            });
+
+          this.assignmentFinishedSubscription =
+            this.transportHubService.assignmentFinished$.subscribe(res => {
+              if (res) {
+                this.refreshAssignmentsList();
+              }
+            });
+
+          this.assignmentExpiredSubscription =
+            this.transportHubService.assignmentExpired$.subscribe(ass => {
+              if (ass) {
+                this.refreshAssignmentsList();
+              }
+            });
+
+          this.assignmentFailedSubscription =
+            this.transportHubService.assignmentFailed$.subscribe(ass => {
+              if (ass && this.currentAssignment && ass.assignmentId === this.currentAssignment.id) {
+                this.notifications.showError("Minął czas na wykonanie podjętego zlecenia!");
+              }
+            });
+        }
+      });
+  }
 
   ngOnInit(): void {
     this.initConnection();
     this.fetchCurrentAssignment();
-    this.fetchAssignments({page:this.currentPage,itemsPerPage:this.currentPageSize});
+    this.fetchAssignments({ page: this.currentPage, itemsPerPage: this.currentPageSize });
 
     var body = document.getElementsByTagName("body")[0];
     body.classList.add("map-page");
   }
 
-  ngOnDestroy():void {
+  ngOnDestroy(): void {
     var body = document.getElementsByTagName("body")[0];
     body.classList.remove("map-page");
+
+    this.removeConnections();
+
+    this.transportHubConnectionSubscription.unsubscribe();
+
+    if (this.assignmentCreatedSubscription)
+      this.assignmentCreatedSubscription.unsubscribe();
+
+    if (this.assignmentTakenSubscription)
+      this.assignmentTakenSubscription.unsubscribe();
+
+    if (this.assignmentFinishedSubscription)
+      this.assignmentFinishedSubscription.unsubscribe();
   }
 
-  public fetchAssignments = ($event:{page, itemsPerPage}, notify:boolean = true):void => {
+  public fetchAssignments = ($event: { page, itemsPerPage }, notify: boolean = true): void => {
     let model = new FreeAssignmentsModel();
 
     this.currentPage = model.page = $event.page;
     this.currentPageSize = model.pageSize = $event.itemsPerPage;
 
-    this.freeAssignments.fetch(model).subscribe(res=> {
-      if(res.successful) {
+    this.freeAssignments.fetch(model).subscribe(res => {
+      if (res.successful) {
         this.freeAssignmentsList = res.data;
         this.totalItems = res.totalItems;
-        
-        if(notify && res.data.length > 0)
+
+        if (notify && res.data.length > 0)
           this.notifications.showSuccess("Pobrano najnowszą listę wolnych zleceń.");
-        else if(notify && res.data.length == 0)
+        else if (notify && res.data.length == 0)
           this.notifications.showInfo("Brak nowych zleceń.");
 
       } else {
         this.notifications.showError("Wystąpił problem przy pobieraniu listy wolnych zleceń.");
       }
-    },()=>this.notifications.showError("Wystąpił problem przy pobieraniu listy wolnych zleceń."));
+    }, () => this.notifications.showError("Wystąpił problem przy pobieraniu listy wolnych zleceń."));
   };
 
-  public refreshAssignmentsList = ():void => {
-    this.fetchAssignments({page:this.currentPage, itemsPerPage:this.currentPageSize});
-  }
+  public refreshAssignmentsList = (): void => {
+    this.fetchAssignments({ page: this.currentPage, itemsPerPage: this.currentPageSize });
+  };
 
-  public fetchCurrentAssignment = ():void => {
+  public fetchCurrentAssignment = (): void => {
     let id = this.userManager.userId;
-    this.currentDriversAssignment.fetch(id).subscribe(res=> {
-      if(res.successful) {
+    this.currentAssignment = null;
+    this.currentDriversAssignment.fetch(id).subscribe(res => {
+      if (res.successful) {
         this.currentAssignment = res.data;
+
         this.notifications.showSuccess("Pobrano bieżące zlecenie.");
       }
     })
   };
 
-  public fetchAssignmentDetails = (id:string):void => {
-    this.assignmentDetailsService.fetch(id).subscribe(res=>{
-      if(res.successful) {
+  public fetchAssignmentDetails = (id: string): void => {
+    this.assignmentDetailsService.fetch(id).subscribe(res => {
+      if (res.successful) {
         this.assignmentDetails = res.data;
         this.assignmentDetailsModalRef = this.modalService.show(this.assignmentDetailsModal);
       } else {
@@ -128,13 +198,15 @@ export class DriverDashboardComponent implements OnInit {
     })
   };
 
-  public takeAssignment = (id:string):void => {
+  public takeAssignment = (id: string): void => {
     this.loader.show("Podejmowanie zlecenia...");
 
-    this.takeAssignmentService.take(id).subscribe(res=>{
+    this.takeAssignmentService.take(id).subscribe(res => {
       this.loader.hide();
-      if(res.successful) {
+      if (res.successful) {
         this.notifications.showSuccess("Przyjęto zlecenie!");
+
+        this.transportHubService.assignmentTaken(id, this.freeAssignmentsList.find(x => x.id === id).title)
         this.refreshAssignmentsList();
         this.fetchCurrentAssignment();
       } else {
@@ -143,12 +215,16 @@ export class DriverDashboardComponent implements OnInit {
     })
   };
 
-  public finishCurrentAssignment = ():void => {
-    this.loader.show("Zakańczanie bieżącego zlecenia...");
+  public finishCurrentAssignment = (): void => {
+    this.loader.show("Kończenie bieżącego zlecenia...");
 
-    this.finishAssignmentService.finish(this.currentAssignment.id).subscribe(res=>{
-      if(res.successful) {
+    let id = this.currentAssignment.id;
+
+    this.finishAssignmentService.finish(this.currentAssignment.id).subscribe(res => {
+      if (res.successful) {
         this.notifications.showSuccess("Ukończono zlecenie!");
+
+        this.transportHubService.assignmentFinished(id, this.currentAssignment.title)
         this.fetchCurrentAssignment();
       } else {
         this.notifications.showError("Zakończenie zlecenia nie powiodło się.")
@@ -158,12 +234,12 @@ export class DriverDashboardComponent implements OnInit {
     });
   };
 
-  public downloadTransportDocument = (assignmentId:string):void => {
+  public downloadTransportDocument = (assignmentId: string): void => {
     this.loader.show("Pobieranie dokumentu przewozowego...");
 
     forkJoin(
-      this.transportDocumentFile.download(assignmentId), 
-      this.transportDocumentInfo.fetch(assignmentId)).subscribe(res=> {
+      this.transportDocumentFile.download(assignmentId),
+      this.transportDocumentInfo.fetch(assignmentId)).subscribe(res => {
         this.loader.hide();
 
         let file = res[0];
@@ -171,41 +247,58 @@ export class DriverDashboardComponent implements OnInit {
 
         try {
           FileSaver.saveAs(file, info.data.number + '.' + info.data.name.split('.')[1]);
-        } catch(err) {
+        } catch (err) {
           this.notifications.showError("Wystąpił problem przy pobieraniu dokumentu.");
         }
       }, () => this.notifications.showError("Wystąpił problem przy pobieraniu dokumentu."));
-  }
+  };
 
-  private initConnection = ():void => {
-    if(this.locationsService.isDisconnected) {
+  private initConnection = (): void => {
+    if (this.locationsService.isDisconnected) {
       this.locationsService.connect();
+    } else if (this.locationsService.isDisconnecting) {
+      setTimeout(() => this.locationsService.connect(), 100);
+    }
+
+    if (this.transportHubService.isDisconnected) {
+      this.transportHubService.connect();
+    } else if (this.transportHubService.isDisconnecting) {
+      setTimeout(() => this.transportHubService.connect(), 100);
     }
   };
 
-  get hasActiveAssignment():boolean {
+  private removeConnections = ():void => {
+    this.locationsService.disconnect(false);
+    this.transportHubService.disconnect(false);
+  }
+
+  get hasActiveAssignment(): boolean {
     return this.currentAssignment && this.currentAssignment !== null && this.currentAssignment !== undefined;
   }
-  
-  public get destination ():string {
-    return this.currentAssignment && 
-      this.currentAssignment.destinationStreet + 
-      ", " + 
-      this.currentAssignment.destinationPostalCode + 
-      " " + 
-      this.currentAssignment.destinationCity + 
-      ", " + 
+
+  public get destination(): string {
+    return this.currentAssignment &&
+      this.currentAssignment.destinationStreet +
+      ", " +
+      this.currentAssignment.destinationPostalCode +
+      " " +
+      this.currentAssignment.destinationCity +
+      ", " +
       this.currentAssignment.destinationCountry;
   }
 
-  public get start ():string {
-    return this.currentAssignment && 
-    this.currentAssignment.startingStreet + 
-    ", " + 
-    this.currentAssignment.startingPostalCode + 
-    " " + 
-    this.currentAssignment.startingCity + 
-    ", " + 
-    this.currentAssignment.startingCountry;
+  public get start(): string {
+    return this.currentAssignment &&
+      this.currentAssignment.startingStreet +
+      ", " +
+      this.currentAssignment.startingPostalCode +
+      " " +
+      this.currentAssignment.startingCity +
+      ", " +
+      this.currentAssignment.startingCountry;
+  }
+
+  public get deadline(): Date {
+    return new Date(Date.parse(this.currentAssignment.deadline.toString()));
   }
 }

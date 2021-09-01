@@ -6,10 +6,10 @@ import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/fo
 import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { CreateAssignmentModel } from 'src/infrastructure/methods/create-assignment/create-assignment-model';
 import { Subject, Observable } from 'rxjs';
-import { AssignmentEventsService } from 'src/infrastructure/assignments/assignment-events.service';
 import { Helper } from 'src/infrastructure/common/helper';
 import { DatePipe } from '@angular/common';
 import { listLocales } from 'ngx-bootstrap/chronos';
+import { TransportHubService } from 'src/infrastructure/assignments/transport-hub.service';
 
 
 @Component({
@@ -49,8 +49,8 @@ export class CreateAssignmentComponent implements OnInit {
     private createAssignment: CreateAssignmentService,
     private loader: LoaderService,
     private notifications: NotificationService,
-    private assignmentEvents: AssignmentEventsService,
-    private localeService: BsLocaleService) {
+    private localeService: BsLocaleService,
+    private transportHubService: TransportHubService) {
       this.closed = new EventEmitter<boolean>();
     }
 
@@ -90,11 +90,13 @@ export class CreateAssignmentComponent implements OnInit {
     if(this.validateForm()) {
       this.loader.show("Tworzenie zlecenia w systemie...");
 
-      this.createAssignment.create(this.modelFromForm).subscribe(res=>{
+      let model = this.modelFromForm;
+
+      this.createAssignment.create(model).subscribe(res=>{
         if(res.successful) {
           this.notifications.showSuccess("Utworzono zlecenie!");
           this.initForm();
-          this.assignmentEvents.assignmentCreated(res.assignmentId);
+          this.transportHubService.assignmentCreated(res.assignmentId, model.title);
         } else {
           this.notifications.showError("Utworzenie zlecenia nie powiodło się.");
         }

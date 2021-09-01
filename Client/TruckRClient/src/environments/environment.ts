@@ -7,6 +7,7 @@ export const environment = {
   authServiceRoot: "https://localhost:44396/auth-service",
   locationsHub: "https://localhost:44346/locations",
   transportServiceRoot: "https://localhost:44396/transport-service",
+  transportHub: "https://localhost:44318/transport"
 };
 
 /*

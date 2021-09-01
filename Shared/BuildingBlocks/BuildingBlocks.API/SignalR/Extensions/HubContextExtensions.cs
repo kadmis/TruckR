@@ -17,5 +17,10 @@ namespace BuildingBlocks.API.SignalR.Extensions
                 return null;
             }
         }
+
+        public static string HubUserRole(this HubCallerContext context)
+        {
+            return context.User?.FindFirst(ClaimTypes.Role)?.Value;
+        }
     }
 }

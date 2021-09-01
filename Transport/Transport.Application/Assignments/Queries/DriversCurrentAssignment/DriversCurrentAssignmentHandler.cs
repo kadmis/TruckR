@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
+using BuildingBlocks.Domain;
 
 namespace Transport.Application.Assignments.Queries.DriversCurrentAssignment
 {
@@ -22,13 +23,17 @@ namespace Transport.Application.Assignments.Queries.DriversCurrentAssignment
         {
             var query = "SELECT TOP 1 * " +
                 "FROM dbo.Assignments AS A " +
-                "WHERE A.DriverId = @DriverId AND A.CompletedOn IS NULL";
+                "WHERE A.DriverId = @DriverId AND A.CompletedOn IS NULL AND A.Deadline > @Now AND A.FailedOn IS NULL";
 
             try
             {
                 var connection = _sqlConnection.GetOpenConnection();
 
-                var result = await connection.QueryFirstAsync<AssignmentDetailsDTO>(query, new { request.DriverId });
+                var result = await connection.QueryFirstAsync<AssignmentDetailsDTO>(query, new 
+                { 
+                    DriverId = request.DriverId, 
+                    Now = Clock.Now 
+                });
 
                 return DriversCurrentAssignmentResult.Success(result);
             }

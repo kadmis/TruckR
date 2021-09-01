@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\Shared\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\Transport.Application\Transport.Application.csproj" />
     <ProjectReference Include="..\Transport.Domain\Transport.Domain.csproj" />
+    <ProjectReference Include="..\Transport.SignalRClient\Transport.SignalRClient.csproj" />
   </ItemGroup>
 
 </Project>

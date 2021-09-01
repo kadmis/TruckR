@@ -11,3 +11,26 @@
 .assignments-table::-webkit-scrollbar {
     display: none;
 }
+
+.current-assignment {
+    margin-bottom: 5%;
+}
+
+.current-assignment .current-assignment-header {
+    margin-bottom: 0%;
+}
+
+.current-assignment .current-assignment-actions {
+    margin-bottom: 2%;
+}
+
+.current-assignment .current-assignment-timer {
+   margin-bottom: 5%;
+}
+
+.current-assignment .current-assignment-info {
+    margin-bottom: 0%;
+}
+.current-assignment .current-assignment-info p {
+    font-size: 1rem;
+}

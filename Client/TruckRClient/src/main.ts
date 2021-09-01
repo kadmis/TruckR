@@ -36,10 +36,15 @@ export function transportServiceUrl() {
   return environment.transportServiceRoot;
 }
 
+export function transportHubUrl() {
+  return environment.transportHub;
+}
+
 const providers = [
 {provide: "AUTH_SERVICE_URL", useFactory: authServiceUrl, deps:[]},
 {provide: "LOCATIONS_HUB_URL", useFactory: locationsHubUrl, deps:[]},
-{provide: "TRANSPORT_SERVICE_URL", useFactory: transportServiceUrl, deps:[]}
+{provide: "TRANSPORT_SERVICE_URL", useFactory: transportServiceUrl, deps:[]},
+{provide: "TRANSPORT_HUB_URL", useFactory: transportHubUrl, deps:[]}
 ];
 
 platformBrowserDynamic(providers)

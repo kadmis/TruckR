@@ -58,6 +58,10 @@ export class UserManagerService {
     return this._authenticationId;
   }
 
+  public get role():string {
+    return this._role;
+  }
+
   public get isDispatcher():boolean {
     return this._role && this._role === this.dispatcher;
   }
