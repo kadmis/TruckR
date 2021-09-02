@@ -18,7 +18,10 @@ namespace Auth.Domain.Data.Entities
         {
         }
 
-        public static UserAuthentication Authenticate(User user, Password givenPassword, IPasswordMatches passwordMatches)
+        public static UserAuthentication Authenticate(
+            User user, 
+            Password givenPassword, 
+            IPasswordMatches passwordMatches)
         {
             CheckRule(new UserHasToExist(user));
             CheckRule(new PasswordHasToMatch(user, givenPassword, passwordMatches));
@@ -32,7 +35,10 @@ namespace Auth.Domain.Data.Entities
             };
         }
 
-        public static UserAuthentication Refresh(User user, UserAuthentication userAuthentication, Guid providedToken)
+        public static UserAuthentication Refresh(
+            User user, 
+            UserAuthentication userAuthentication, 
+            Guid providedToken)
         {
             CheckRule(new UserHasToExist(user));
             CheckRule(new UserCannotBeInDeletedState(user));
@@ -59,7 +65,8 @@ namespace Auth.Domain.Data.Entities
         {
             AuthenticationDate = Clock.Now;
             ValidUntil = tokenValidUntil.AddDays(7);
-            RefreshToken = Guid.NewGuid();
+
+            GenerateRefreshToken();
 
             return this;
         }

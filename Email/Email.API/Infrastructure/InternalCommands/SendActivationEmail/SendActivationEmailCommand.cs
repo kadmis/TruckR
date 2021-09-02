@@ -33,13 +33,16 @@ namespace Email.API.Infrastructure.InternalCommands.SendActivationEmail
             _emailQueueService = emailQueueService;
         }
 
-        public async Task<Unit> Handle(SendActivationEmailCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(
+            SendActivationEmailCommand request, CancellationToken cancellationToken)
         {
             await _emailQueueService.Add(new EmailQueueItem(
                 request.Email,
                 request.Email,
                 "Welcome to the TruckR system.",
-                $"Activate your account here: http://localhost:4200/#/activate/{request.UserId}/{request.ActivationId}"), cancellationToken);
+                $"Activate your account here: " +
+                $"http://localhost:4200/#/activate/{request.UserId}/{request.ActivationId}"), 
+                cancellationToken);
 
             return Unit.Value;
         }

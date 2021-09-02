@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Commands.Authenticate
 {
-    public class AuthenticationCommandHandler : ICommandHandler<AuthenticationCommand, AuthenticationResult>
+    public class AuthenticationCommandHandler 
+        : ICommandHandler<AuthenticationCommand, AuthenticationResult>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordMatches _passwordMatches;
@@ -21,21 +22,27 @@ namespace Auth.Application.Commands.Authenticate
             IUnitOfWork unitOfWork,
             IPasswordMatches passwordMatches)
         {
-            _tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            _passwordMatches = passwordMatches ?? throw new ArgumentNullException(nameof(passwordMatches));
+            _tokenGenerator = tokenGenerator 
+                ?? throw new ArgumentNullException(nameof(tokenGenerator));
+            _unitOfWork = unitOfWork 
+                ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _passwordMatches = passwordMatches 
+                ?? throw new ArgumentNullException(nameof(passwordMatches));
         }
 
-        public async Task<AuthenticationResult> Handle(AuthenticationCommand request, CancellationToken cancellationToken)
+        public async Task<AuthenticationResult> Handle(
+            AuthenticationCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var givenUsername = new Username(request.Username);
                 var givenPassword = new Password(request.Password);
 
-                var user = await _unitOfWork.UserRepository.FindByUsername(givenUsername, cancellationToken);
+                var user = await _unitOfWork.UserRepository.FindByUsername(
+                    givenUsername, cancellationToken);
 
-                var authentication = UserAuthentication.Authenticate(user, givenPassword, _passwordMatches);
+                var authentication = UserAuthentication.Authenticate(
+                    user, givenPassword, _passwordMatches);
 
                 var token = _tokenGenerator.GenerateFor(user, authentication);
 
@@ -45,7 +52,10 @@ namespace Auth.Application.Commands.Authenticate
 
                 await _unitOfWork.Save(cancellationToken);
 
-                return AuthenticationResult.Success(token.Value, authentication.RefreshToken.Value, token.RefreshInterval);
+                return AuthenticationResult.Success(
+                    token.Value, 
+                    authentication.RefreshToken.Value, 
+                    token.RefreshInterval);
             }
             catch (Exception ex)
             {

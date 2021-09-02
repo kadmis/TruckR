@@ -22,28 +22,35 @@ namespace Auth.Application.Commands.RefreshToken
             _tokenGenerator = tokenGenerator ?? throw new ArgumentNullException(nameof(tokenGenerator));
         }
 
-        public async Task<RefreshTokenResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<RefreshTokenResult> Handle(
+            RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await _uow.UserRepository.FindById(request.UserId, cancellationToken);
+                var user = await _uow.UserRepository.FindById(
+                    request.UserId, cancellationToken);
 
-                var authentication = await _uow.UserAuthenticationRepository.FindById(request.AuthenticationId, cancellationToken);
+                var authentication = await _uow.UserAuthenticationRepository.FindById(
+                    request.AuthenticationId, cancellationToken);
 
-                var refreshed = UserAuthentication.Refresh(user, authentication, request.RefreshToken);
+                var refreshed = UserAuthentication.Refresh(
+                    user, authentication, request.RefreshToken);
 
                 var token = _tokenGenerator.GenerateFor(user, refreshed);
-
-                refreshed.Activate(token.ValidUntil);
 
                 if (refreshed.Id == authentication.Id)
                     _uow.UserAuthenticationRepository.Update(refreshed);
                 else
+                {
+                    refreshed.Activate(token.ValidUntil);
                     _uow.UserAuthenticationRepository.Add(refreshed);
+                }
+                    
 
                 await _uow.Save(cancellationToken);
 
-                return RefreshTokenResult.Success(token.Value, refreshed.RefreshToken.Value, token.RefreshInterval);
+                return RefreshTokenResult.Success(
+                    token.Value, refreshed.RefreshToken.Value, token.RefreshInterval);
             }
             catch (Exception ex)
             {

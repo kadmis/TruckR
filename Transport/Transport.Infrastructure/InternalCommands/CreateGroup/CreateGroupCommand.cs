@@ -29,9 +29,12 @@ namespace Transport.Infrastructure.InternalCommands.CreateGroup
             _uow = uow;
         }
 
-        public async Task<Unit> Handle(CreateGroupCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(
+            CreateGroupCommand request,
+            CancellationToken cancellationToken)
         {
-            var group = TransportGroup.Create(request.DispatcherId);
+            var group = TransportGroup
+                .Create(request.DispatcherId);
 
             _uow.TransportGroupsRepository.Add(group);
 

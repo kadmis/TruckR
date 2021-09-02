@@ -27,9 +27,12 @@ namespace Transport.Infrastructure.InternalCommands.AddDriverToGroup
             _uow = uow;
         }
 
-        public async Task<Unit> Handle(AddDriverToGroupCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(
+            AddDriverToGroupCommand request, 
+            CancellationToken cancellationToken)
         {
-            var group = await _uow.TransportGroupsRepository.FindGroupWithFreeSpots(cancellationToken);
+            var group = await _uow.TransportGroupsRepository
+                .FindGroupWithFreeSpots(cancellationToken);
 
             group.AddDriver(request.DriverId);
 

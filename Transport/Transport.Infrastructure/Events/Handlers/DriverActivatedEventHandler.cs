@@ -15,9 +15,12 @@ namespace Transport.Infrastructure.Events.Handlers
             _processor = processor;
         }
 
-        public async Task Handle(DriverActivatedEvent @event, CancellationToken cancellationToken = default)
+        public async Task Handle(
+            DriverActivatedEvent @event, 
+            CancellationToken cancellationToken = default)
         {
-            await _processor.SaveEvent(@event, cancellationToken);
+            await _processor.SaveEvent(
+                @event, cancellationToken);
         }
     }
 }

@@ -34,7 +34,8 @@ export class RefreshStateManagerService {
     this.refresh(
       this.tokenManagerService.refreshToken, 
       this.userManagerService.userId, 
-      this.userManagerService.authenticationId), (Number)(this.tokenManagerService.refreshInterval));
+      this.userManagerService.authenticationId), 
+        (Number)(this.tokenManagerService.refreshInterval));
   }
 
   public clear = ():void => {

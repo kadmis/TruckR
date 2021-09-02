@@ -24,7 +24,14 @@ namespace Auth.Domain.Services.Registration
             _usernameExists = usernameExists ?? throw new ArgumentNullException(nameof(usernameExists));
         }
 
-        public async Task<User> RegisterDriver(string username, string firstname, string lastname, string password, string email, string phoneNumber, CancellationToken cancellationToken = default)
+        public async Task<User> RegisterDriver(
+            string username, 
+            string firstname, 
+            string lastname, 
+            string password, 
+            string email, 
+            string phoneNumber, 
+            CancellationToken cancellationToken = default)
         {
             var user = User.Create(firstname, lastname, username, password, email, phoneNumber, UserRole.Driver);
 
@@ -37,7 +44,14 @@ namespace Auth.Domain.Services.Registration
             return user;
         }
 
-        public async Task<User> RegisterDispatcher(string username, string firstname, string lastname, string password, string email, string phoneNumber, CancellationToken cancellationToken = default)
+        public async Task<User> RegisterDispatcher(
+            string username, 
+            string firstname, 
+            string lastname, 
+            string password, 
+            string email, 
+            string phoneNumber, 
+            CancellationToken cancellationToken = default)
         {
             var user = User.Create(firstname, lastname, username, password, email, phoneNumber, UserRole.Dispatcher);
 

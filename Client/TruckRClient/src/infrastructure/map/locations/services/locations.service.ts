@@ -119,7 +119,8 @@ export class LocationsService {
             this.shareIfPositionChanged(latitude, longitude);
           });
       }
-    }, () => this.notifications.showError("Brak dostępu do lokalizacji. Aby zapewnić jej udostępnianie w systemie, należy zezwolić przeglądarce na jej używanie."), {
+    }, () => this.notifications.showError(
+      "Brak dostępu do lokalizacji. Aby zapewnić jej udostępnianie w systemie, należy zezwolić przeglądarce na jej używanie."), {
     enableHighAccuracy: false,
     timeout: 27000,
     maximumAge: 30000 });
@@ -176,15 +177,21 @@ export class LocationsService {
     return !this.hubConnection || this.hubConnection && this.hubConnection.state === SignalR.HubConnectionState.Disconnecting;
   }
 
-  private shareIfPositionChanged = (latitude: number, longitude: number): void => {
+  private shareIfPositionChanged = (
+    latitude: number, 
+    longitude: number): void => {
     if(latitude != this.currentLatitude || longitude != this.currentLongitude) {
 
       this.currentLongitude = longitude;
       this.currentLatitude = latitude; 
 
       this.hubConnection
-        .invoke('ShareLocation', new UserLocation(this.userManager.userId, this.currentLongitude, this.currentLatitude))
-        .catch(()=>this.notifications.showWarning('Brak połączenia z serwisem geolokalizacji.'))
+        .invoke('ShareLocation', new UserLocation(
+          this.userManager.userId, 
+          this.currentLongitude, 
+          this.currentLatitude))
+        .catch(()=>this.notifications
+        .showWarning('Brak połączenia z serwisem geolokalizacji.'))
         .finally();
     }
   };

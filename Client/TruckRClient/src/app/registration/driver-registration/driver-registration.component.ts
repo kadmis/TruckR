@@ -62,7 +62,8 @@ export class DriverRegistrationComponent implements OnInit {
 
     this.registerDriver.register(model).subscribe((res)=>{
       if(res.successful) {
-        this.notification.showSuccess("Rejestracja kierowcy powiodła się. Link aktywacyjny został przesłany na podany email.");
+        this.notification.showSuccess(
+          "Rejestracja kierowcy powiodła się. Link aktywacyjny został przesłany na podany email.");
       } else {
         this.notification.showError("Rejestracja nie powiodła się.");
       }

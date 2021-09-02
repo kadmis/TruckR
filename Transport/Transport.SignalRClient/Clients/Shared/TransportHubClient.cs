@@ -29,7 +29,10 @@ namespace Transport.SignalRClient.Clients.Shared
             await connection.StopAsync(cancellationToken);
         }
 
-        public async Task SendAssignmentExpired(Guid assignmentId, Guid dispatcherId, CancellationToken cancellationToken = default)
+        public async Task SendAssignmentExpired(
+            Guid assignmentId, 
+            Guid dispatcherId, 
+            CancellationToken cancellationToken = default)
         {
             await using HubConnection connection = new HubConnectionBuilder()
                 .WithUrl(_configuration.Transport)

@@ -85,11 +85,13 @@ namespace Transport.API.Hubs
             if (driverConnections != null)
                 foreach (var driverConnection in driverConnections)
                     foreach (var connection in driverConnection.Connections)
-                        sendAssignmentExpiredTasks.Add(Clients.Client(connection).SendAsync("AssignmentExpired", new { AssignmentId = assignmentId }));
+                        sendAssignmentExpiredTasks.Add(Clients.Client(connection)
+                            .SendAsync("AssignmentExpired", new { AssignmentId = assignmentId }));
 
             if (dispatcherConnections != null)
                 foreach (var connection in dispatcherConnections.Connections)
-                    sendAssignmentExpiredTasks.Add(Clients.Client(connection).SendAsync("AssignmentExpired", new { AssignmentId = assignmentId }));
+                    sendAssignmentExpiredTasks.Add(Clients.Client(connection)
+                        .SendAsync("AssignmentExpired", new { AssignmentId = assignmentId }));
 
             await Task.WhenAll(sendAssignmentExpiredTasks);
         }

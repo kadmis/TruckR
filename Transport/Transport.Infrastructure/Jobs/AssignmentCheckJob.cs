@@ -59,11 +59,15 @@ namespace Transport.Infrastructure.Jobs
                 foreach (var assignment in assignments)
                 {
                     if(assignment.DriverId.HasValue)
-                        signalrTasks.Add(_client.SendAssignmentFailed(assignment.Id, assignment.DriverId.Value, assignment.DispatcherId, cancellationToken));
+                        signalrTasks.Add(_client.SendAssignmentFailed(
+                            assignment.Id, assignment.DriverId.Value, assignment.DispatcherId, cancellationToken));
                     else if(!assignment.DriverId.HasValue)
-                        signalrTasks.Add(_client.SendAssignmentExpired(assignment.Id, assignment.DispatcherId, cancellationToken));
+                        signalrTasks.Add(_client.SendAssignmentExpired(
+                            assignment.Id, assignment.DispatcherId, cancellationToken));
 
-                    internalCommandTasks.Add(_mediator.Send(new SetAssignmentAsFailedCommand(assignment.Id), cancellationToken));
+                    internalCommandTasks.Add(
+                        _mediator.Send(new SetAssignmentAsFailedCommand(assignment.Id), 
+                        cancellationToken));
                 }
 
                 await Task.WhenAll(internalCommandTasks);

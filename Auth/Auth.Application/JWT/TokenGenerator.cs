@@ -47,7 +47,8 @@ namespace Auth.Application.JWT
             };
             var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
 
-            return new Token(tokenHandler.WriteToken(securityToken), descriptor.Expires.Value, _expireInMinutes * 60 * 1000);
+            return new Token(
+                tokenHandler.WriteToken(securityToken), descriptor.Expires.Value, _expireInMinutes * 60 * 1000);
         }
     }
 }
