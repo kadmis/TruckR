@@ -22,7 +22,7 @@ namespace BuildingBlocks.EventBus.Internals
                 Port = 5672,
                 Hostnames = new List<string> { "localhost" },
                 RequestTimeout = TimeSpan.FromSeconds(10),
-                PublishConfirmTimeout = TimeSpan.FromSeconds(5),
+                PublishConfirmTimeout = TimeSpan.FromSeconds(30),
                 RecoveryInterval = TimeSpan.FromSeconds(10),
                 PersistentDeliveryMode = true,
                 AutoCloseConnection = true,
